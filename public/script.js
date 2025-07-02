@@ -110,3 +110,23 @@ function confermaEliminazioneTotale() {
             });
     }
 }
+
+function RipstinaPunteggitutti() {
+    if (confirm("Sei sicuro di voler ripristinare le ore residue per tutti i clienti?")) {
+        fetch('/ripristina_ore_tutti', {
+            method: 'POST',
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Ore residue ripristinate per tutti i clienti.');
+                    location.reload(); // Ricarica la pagina per vedere gli aggiornamenti
+                } else {
+                    alert('Errore durante il ripristino delle ore.');
+                }
+            })
+            .catch(error => {
+                console.error('Errore nella richiesta:', error);
+                alert('Errore nella richiesta.');
+            });
+    }
+}
