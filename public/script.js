@@ -4,7 +4,7 @@ async function caricaClienti() {
     const tbody = document.querySelector('#tabella-clienti tbody');
     const select = document.getElementById('cliente_id');
     tbody.innerHTML = '';
-    select.innerHTML = '<option value="">Seleziona Cliente</option>';
+    select.innerHTML = '<option value="">-- Seleziona Cliente -- </option>';
 
     data.forEach(c => {
         // Select
