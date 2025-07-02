@@ -24,6 +24,7 @@ async function caricaClienti() {
           <td>${c.ore_residue}</td>
           <td>
             <button onclick="salvaCliente(${c.id}, this)">Salva</button>
+            <button onclick="ripristinaOre(${c.id}, ${c.ore_acquistate})">Ripristina Ore</button>
             <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
               <input type="submit" value="Elimina" class="secondary">
             </form>
@@ -51,6 +52,17 @@ function salvaCliente(id, btn) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(dati)
     }).then(() => caricaClienti());
+}
+
+function ripristinaOre(id, oreAcquistate) {
+    if (confirm(`Ripristinare le ore residue a ${oreAcquistate}?`)) {
+        fetch(`/ripristina_ore/${id}`, {
+            method: 'POST'
+        }).then(() => {
+            alert(`Le ore residue sono state ripristinate a ${oreAcquistate}`);
+            caricaClienti();
+        });
+    }
 }
 
 document.getElementById('form-cliente').addEventListener('submit', e => {

@@ -36,13 +36,11 @@ router.post('/update_cliente/:id', (req, res) => {
 
     let nuove_ore_residue;
     if (ore_usate <= 0) {
-      // Nessuna ora usata → ore_residue = ore_acquistate
       nuove_ore_residue = ore_acquistate;
     } else {
       nuove_ore_residue = ore_acquistate - ore_usate;
     }
 
-    // Previeni che le ore residue diventino negative
     if (nuove_ore_residue < 0) nuove_ore_residue = 0;
 
     db.run(
@@ -70,6 +68,15 @@ router.post('/delete_all', (req, res) => {
     db.run('DELETE FROM interventi');
     db.run('DELETE FROM clienti');
     res.status(200).send('Tutti i dati eliminati');
+  });
+});
+
+// 🔁 Ripristina ore residue = ore acquistate
+router.post('/ripristina_ore/:id', (req, res) => {
+  const id = req.params.id;
+  db.run('UPDATE clienti SET ore_residue = ore_acquistate WHERE id = ?', [id], err => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.sendStatus(200);
   });
 });
 
