@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Ore Clienti</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Anagrafica Clienti</h1>
+        <form id="form-cliente">
+            <input type="text" name="ragione_sociale" placeholder="Ragione Sociale" required>
+            <input type="text" name="indirizzo" placeholder="Indirizzo" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="number" step="0.1" name="ore_acquistate" placeholder="Ore Acquistate" required>
+            <input type="submit" value="Aggiungi Cliente">
+        </form>
+
+        <h1>Registra Intervento</h1>
+        <form id="form-intervento">
+            <select name="cliente_id" id="cliente_id" required>
+                <option value="">Seleziona Cliente</option>
+            </select>
+            <input type="text" name="tipo_servizio" placeholder="Tipo Servizio" required>
+            <input type="number" step="0.1" name="ore_utilizzate" placeholder="Ore Utilizzate" required>
+            <input type="submit" value="Registra Intervento">
+        </form>
+
+        <div class="table-container">
+            <h1>Lista Clienti & Ore Residue</h1>
+            <table id="tabella-clienti">
+                <thead>
+                    <tr>
+                        <th>Ragione Sociale</th>
+                        <th>Indirizzo</th>
+                        <th>Email</th>
+                        <th>Ore Acquistate</th>
+                        <th>Ore Residue</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function caricaClienti() {
+            const res = await fetch('/api/clienti');
+            const data = await res.json();
+            const tbody = document.querySelector('#tabella-clienti tbody');
+            const select = document.getElementById('cliente_id');
+            tbody.innerHTML = '';
+            select.innerHTML = '<option value="">Seleziona Cliente</option>';
+
+            data.forEach(c => {
+                // Select
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.ragione_sociale;
+                opt.dataset.oreResidue = c.ore_residue;
+                select.appendChild(opt);
+
+                // Table row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td><input type="text" value="${c.ragione_sociale}"></td>
+          <td><input type="text" value="${c.indirizzo}"></td>
+          <td><input type="email" value="${c.email}"></td>
+          <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
+          <td>${c.ore_residue}</td>
+          <td>
+            <button onclick="salvaCliente(${c.id}, this)">Salva</button>
+            <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
+              <input type="submit" value="Elimina" class="secondary">
+            </form>
+          </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function confermaEliminazione() {
+            return confirm('Sei sicuro di voler eliminare questo cliente?');
+        }
+
+        function salvaCliente(id, btn) {
+            const tr = btn.closest('tr');
+            const inputs = tr.querySelectorAll('input');
+            const dati = {
+                ragione_sociale: inputs[0].value,
+                indirizzo: inputs[1].value,
+                email: inputs[2].value,
+                ore_acquistate: parseFloat(inputs[3].value)
+            };
+            fetch(`/update_cliente/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dati)
+            }).then(() => caricaClienti());
+        }
+
+        document.getElementById('form-cliente').addEventListener('submit', e => {
+            e.preventDefault();
+            const dati = new URLSearchParams(new FormData(e.target));
+            fetch('/add_cliente', {
+                method: 'POST',
+                body: dati
+            }).then(() => {
+                e.target.reset();
+                caricaClienti();
+            });
+        });
+
+        document.getElementById('form-intervento').addEventListener('submit', e => {
+            e.preventDefault();
+            const form = new FormData(e.target);
+            const cliente_id = form.get('cliente_id');
+            const ore_utilizzate = parseFloat(form.get('ore_utilizzate'));
+            const selectedOption = e.target.cliente_id.selectedOptions[0];
+            const ore_residue = parseFloat(selectedOption.dataset.oreResidue);
+
+            if (ore_utilizzate > ore_residue) {
+                alert('Non puoi abilitare quelle ore: ore residue insufficienti!');
+                return;
+            }
+
+            fetch('/add_intervento', {
+                method: 'POST',
+                body: new URLSearchParams(form)
+            }).then(() => {
+                e.target.reset();
+                caricaClienti();
+            });
+        });
+
+        caricaClienti();
+    </script>
+</body>
+
+</html>

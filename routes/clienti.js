@@ -27,7 +27,7 @@ router.post('/add_cliente', (req, res) => {
 
 // Elimina cliente
 router.post('/delete_cliente/:id', (req, res) => {
-  db.run('DELETE FROM clienti WHERE id = ?', [req.params.id], function(err) {
+  db.run('DELETE FROM clienti WHERE id = ?', [req.params.id], function (err) {
     if (err) throw err;
     res.redirect('/');
   });
@@ -41,11 +41,19 @@ router.post('/update_cliente/:id', (req, res) => {
     const delta = ore_acquistate - row.ore_residue;
     db.run('UPDATE clienti SET ragione_sociale=?, indirizzo=?, email=?, ore_acquistate=?, ore_residue=? WHERE id=?',
       [ragione_sociale, indirizzo, email, ore_acquistate, ore_acquistate - (row.ore_residue - delta), req.params.id],
-      function(err2) {
+      function (err2) {
         if (err2) throw err2;
         res.redirect('/');
       });
   });
 });
+
+router.get('/api/clienti', (req, res) => {
+  db.all('SELECT * FROM clienti', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 
 module.exports = router;
