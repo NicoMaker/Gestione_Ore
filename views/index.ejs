@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gestione Ore Clienti</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Anagrafica Clienti</h1>
+        <form action="/add_cliente" method="post">
+            <input type="text" name="ragione_sociale" placeholder="Ragione Sociale" required>
+            <input type="text" name="indirizzo" placeholder="Indirizzo" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="number" step="0.1" name="ore_acquistate" placeholder="Ore Acquistate" required>
+            <input type="submit" value="Aggiungi Cliente">
+        </form>
+
+        <h1>Registra Intervento</h1>
+        <form action="/add_intervento" method="post">
+            <select name="cliente_id" required>
+                <option value="">Seleziona Cliente</option>
+                <% clienti.forEach(cliente=> { %>
+                    <option value="<%= cliente.id %>">
+                        <%= cliente.ragione_sociale %>
+                    </option>
+                    <% }) %>
+            </select>
+            <input type="text" name="tipo_servizio" placeholder="Tipo Servizio" required>
+            <input type="number" step="0.1" name="ore_utilizzate" placeholder="Ore Utilizzate" required>
+            <input type="submit" value="Registra Intervento">
+        </form>
+
+        <div class="table-container">
+            <h1>Lista Clienti & Ore Residue</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ragione Sociale</th>
+                        <th>Indirizzo</th>
+                        <th>Email</th>
+                        <th>Ore Acquistate</th>
+                        <th>Ore Residue</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% clienti_full.forEach(c=> { %>
+                        <tr>
+                            <form action="/update_cliente/<%= c.id %>" method="post">
+                                <td><input type="text" name="ragione_sociale" value="<%= c.ragione_sociale %>"></td>
+                                <td><input type="text" name="indirizzo" value="<%= c.indirizzo %>"></td>
+                                <td><input type="email" name="email" value="<%= c.email %>"></td>
+                                <td><input type="number" step="0.1" name="ore_acquistate"
+                                        value="<%= c.ore_acquistate %>"></td>
+                                <td>
+                                    <%= c.ore_residue %>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Salva">
+                            </form>
+                            <form action="/delete_cliente/<%= c.id %>" method="post" style="display:inline;">
+                                <input type="submit" value="Elimina">
+                            </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

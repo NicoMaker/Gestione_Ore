@@ -1,0 +1,471 @@
+/* Reset e variabili CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-solid: #667eea;
+  --primary-dark: #5a6fd8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --light-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --border-focus: #667eea;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Corpo principale */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  background: var(--light-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(102, 126, 234, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(118, 75, 162, 0.05) 0%,
+      transparent 50%
+    );
+}
+
+/* Container principale */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Titoli */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+h1:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* Form styling */
+form {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 3rem;
+  display: grid;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+form:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary);
+}
+
+/* Input e select styling */
+input,
+select {
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: var(--transition);
+  background: var(--card-bg);
+  position: relative;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+input:hover:not(:focus),
+select:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Placeholder styling */
+input::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Submit buttons */
+input[type="submit"] {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  width: fit-content;
+  justify-self: start;
+}
+
+input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+input[type="submit"]:active {
+  transform: translateY(0);
+}
+
+input[type="submit"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+input[type="submit"]:hover::before {
+  left: 100%;
+}
+
+/* Secondary button (Elimina) */
+input[type="submit"].secondary {
+  background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+  margin-left: 0.5rem;
+}
+
+input[type="submit"].secondary:hover {
+  box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+}
+
+/* Table container */
+.table-container {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.table-container:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.table-container h1 {
+  padding: 2rem 2rem 1rem;
+  margin-bottom: 0;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--primary);
+  color: white;
+  padding: 1.5rem 1.25rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+td {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+tr:hover td {
+  background-color: #f9fafb;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table form inputs */
+td input {
+  padding: 0.75rem;
+  margin: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  width: 100%;
+}
+
+td input:focus {
+  background: var(--card-bg);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+/* Form inline per tabella */
+td form {
+  display: inline-block;
+  background: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+  gap: 0.5rem;
+}
+
+td form:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+td form::before {
+  display: none;
+}
+
+td input[type="submit"] {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.875rem;
+  margin: 0 0.25rem;
+}
+
+/* Ore residue styling */
+td:nth-child(5) {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Status indicators per ore residue */
+tr:has(td:nth-child(5):contains("0")) td:nth-child(5) {
+  color: var(--danger);
+}
+
+/* Grid layout per form responsive */
+@media (min-width: 768px) {
+  form {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    align-items: end;
+  }
+
+  form input[type="submit"] {
+    grid-column: span 2;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 15px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  form {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  input,
+  select {
+    padding: 0.875rem 1rem;
+  }
+
+  /* Stack table on mobile */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--card-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  td {
+    border: none;
+    position: relative;
+    padding: 1rem 1rem 1rem 45%;
+    text-align: left;
+  }
+
+  td:before {
+    content: attr(data-label) ": ";
+    position: absolute;
+    left: 1rem;
+    width: 40%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  td input {
+    width: 100%;
+  }
+
+  td:last-child {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  td:last-child:before {
+    display: none;
+  }
+}
+
+/* Loading states */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Success/Error states */
+.success {
+  border-color: var(--success) !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.error {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Micro-interactions */
+input[type="submit"] {
+  position: relative;
+  overflow: hidden;
+}
+
+input[type="submit"]:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+input[type="submit"]:active:before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-solid);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
