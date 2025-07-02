@@ -88,3 +88,13 @@ document.getElementById('form-intervento').addEventListener('submit', e => {
 });
 
 caricaClienti();
+
+function confermaEliminazioneTotale() {
+    if (confirm('Confermi l\'eliminazione di TUTTI I DATI?')) {
+        fetch('/delete_all', { method: 'POST' })
+            .then(() => {
+                alert('Tutti i dati eliminati');
+                caricaClienti();
+            });
+    }
+}

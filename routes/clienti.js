@@ -55,5 +55,14 @@ router.get('/api/clienti', (req, res) => {
   });
 });
 
+// Elimina tutti i clienti e interventi
+router.post('/delete_all', (req, res) => {
+  db.serialize(() => {
+    db.run('DELETE FROM interventi');
+    db.run('DELETE FROM clienti');
+    res.status(200).send('Tutti i dati eliminati');
+  });
+});
+
 
 module.exports = router;
