@@ -71,23 +71,4 @@ router.post('/delete_all', (req, res) => {
   });
 });
 
-// 🔁 Ripristina ore residue = ore acquistate
-router.post('/ripristina_ore/:id', (req, res) => {
-  const id = req.params.id;
-  db.run('UPDATE clienti SET ore_residue = ore_acquistate WHERE id = ?', [id], err => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.sendStatus(200);
-  });
-});
-
-// 🔁 Ripristina ore residue per tutti i clienti
-router.post('/ripristina_ore_tutti', (req, res) => {
-  db.run('UPDATE clienti SET ore_residue = ore_acquistate', [], err => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.sendStatus(200);
-  });
-});
-
-
-
 module.exports = router;

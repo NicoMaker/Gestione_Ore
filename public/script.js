@@ -11,7 +11,7 @@ async function caricaClienti() {
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.ragione_sociale;
-        opt.dataset.oreResidue = c.ore_residue; // IMPORTANTE
+        opt.dataset.oreResidue = c.ore_residue;
         select.appendChild(opt);
 
         // Calcolo ore utilizzate
@@ -20,26 +20,27 @@ async function caricaClienti() {
         // Popola riga tabella
         const tr = document.createElement('tr');
         tr.innerHTML = `
-        <td><input type="text" value="${c.ragione_sociale}"></td>
-        <td><input type="text" value="${c.indirizzo}"></td>
-        <td><input type="email" value="${c.email}"></td>
-        <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
-        <td class="red">${oreUtilizzate}</td>
-        <td class="green">${c.ore_residue.toFixed(1)}</td>
-        <td>
+      <td><input type="text" value="${c.ragione_sociale}"></td>
+      <td><input type="text" value="${c.indirizzo}"></td>
+      <td><input type="email" value="${c.email}"></td>
+      <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
+      <td class="red">${oreUtilizzate}</td>
+      <td class="green">${c.ore_residue.toFixed(1)}</td>
+      <td>
         <button onclick="salvaCliente(${c.id}, this)">Salva</button>
-        <button onclick="ripristinaOre(${c.id}, ${c.ore_acquistate})">Ripristina Ore</button>
         <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
-        <input type="submit" value="Elimina" class="secondary">
+          <input type="submit" value="Elimina" class="secondary">
         </form>
-
+        <a href="/report_cliente/${c.id}" target="_blank" style="text-decoration:none; display:inline-block; margin-top:4px;">
+          <button type="button" class="secondary">Stampa Report</button>
+        </a>
       </td>
     `;
         tbody.appendChild(tr);
     });
 }
 
-const confermaEliminazione = () => confirm(`Sei sicuro di voler eliminare il cliente?`);
+const confermaEliminazione = () => confirm('Sei sicuro di voler eliminare il cliente?');
 
 function salvaCliente(id, btn) {
     const tr = btn.closest('tr');
@@ -109,12 +110,11 @@ document.getElementById('form-intervento').addEventListener('submit', e => {
 });
 
 function confermaEliminazioneTotale() {
-    if (confirm('Confermi l\'eliminazione di TUTTI I DATI?')) {
-        fetch('/delete_all', { method: 'POST' })
-            .then(() => {
-                alert('Tutti i dati eliminati');
-                caricaClienti();
-            });
+    if (confirm("Confermi l'eliminazione di TUTTI I DATI?")) {
+        fetch('/delete_all', { method: 'POST' }).then(() => {
+            alert('Tutti i dati eliminati');
+            caricaClienti();
+        });
     }
 }
 
@@ -129,4 +129,5 @@ function RipstinaPunteggitutti() {
     }
 }
 
+// Carica tutto all'avvio
 caricaClienti();

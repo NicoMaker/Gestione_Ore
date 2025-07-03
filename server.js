@@ -4,24 +4,25 @@ const path = require('path');
 
 const app = express();
 
+// Middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public'))); // Serve file statici (style.css, script.js)
+
 // Routes
 const clientiRoutes = require('./routes/clienti');
 const interventiRoutes = require('./routes/interventi');
+const reportRoutes = require('./routes/report');
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public'))); // Serve file statici (es. style.css)
+app.use('/', clientiRoutes);
+app.use('/', interventiRoutes);
+app.use('/', reportRoutes);
 
-// Serve index.html da /views
+// Pagina principale (index.html)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// API routes
-app.use('/', clientiRoutes);
-app.use('/', interventiRoutes);
-
-// Avvia server
+// Avvio server
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server avviato su http://localhost:${PORT}`);

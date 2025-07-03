@@ -12,19 +12,26 @@
     <div class="container">
         <h1>Anagrafica Clienti</h1>
         <form id="form-cliente">
+            <label>Ragione Sociale</label>
             <input type="text" name="ragione_sociale" placeholder="Ragione Sociale" required>
+            <label>Indirizzo</label>
             <input type="text" name="indirizzo" placeholder="Indirizzo" required>
+            <label>Email</label>
             <input type="email" name="email" placeholder="Email" required>
+            <label>Ore Acquistate</label>
             <input type="number" step="0.1" name="ore_acquistate" placeholder="Ore Acquistate" required>
             <input type="submit" value="Aggiungi Cliente">
         </form>
 
         <h1>Registra Intervento</h1>
         <form id="form-intervento">
+            <label>Seleziona Cliente</label>
             <select name="cliente_id" id="cliente_id" required>
                 <option value="">-- Seleziona Cliente --</option>
             </select>
+            <label>Tipo Servizio</label>
             <input type="text" name="tipo_servizio" placeholder="Tipo Servizio" required>
+            <label>Ore Utilizzate</label>
             <input type="number" step="0.1" name="ore_utilizzate" placeholder="Ore Utilizzate" required>
             <input type="submit" value="Registra Intervento">
         </form>
@@ -53,9 +60,6 @@
             Elimina Tutti i Dati
         </button>
 
-        <button onclick="RipstinaPunteggitutti()" style="margin-bottom: 1rem;" class="btn-danger">
-            Ripristina tutte le ore per tutti i clienti
-        </button>
     </div>
 </body>
 
