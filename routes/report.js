@@ -1,4 +1,4 @@
-// routes/report.js CON UI/UX MIGLIORATA + ALERT CONFERMA
+// routes/report.js CON UI/UX MIGLIORATA + ALERT CONFERMA + VISUALIZZAZIONE ORE
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
@@ -23,7 +23,7 @@ router.get('/report_cliente/:id', (req, res) => {
           <td>${i.ore_utilizzate}</td>
           <td>
             <form method="POST" action="/report_cliente/${clienteId}/elimina_intervento/${i.id}" style="display:inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo intervento?')">
-              <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+              <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
             </form>
           </td>
         </tr>
@@ -52,6 +52,9 @@ router.get('/report_cliente/:id', (req, res) => {
               padding: 1rem;
               border-radius: 8px;
               margin-bottom: 1.5rem;
+            }
+            .cliente-info p {
+              margin: 4px 0;
             }
             table {
               width: 100%;
@@ -108,14 +111,27 @@ router.get('/report_cliente/:id', (req, res) => {
             .print:hover {
               background: #2563eb;
             }
+            .summary-box {
+              background: #d1fae5;
+              padding: 1rem;
+              border-radius: 8px;
+              margin-top: 1rem;
+              font-weight: 500;
+              color: #065f46;
+            }
           </style>
         </head>
         <body>
+        <body>
+          <a href="/" class="btn btn-secondary" style="margin-bottom: 1rem;">← Torna alla Home</a>
+
           <h1>Report Cliente: ${cliente.ragione_sociale}</h1>
 
           <div class="cliente-info">
             <p><strong>Email:</strong> ${cliente.email}</p>
             <p><strong>Indirizzo:</strong> ${cliente.indirizzo}</p>
+            <p><strong>Ore acquistate:</strong> ${cliente.ore_acquistate}</p>
+            <p><strong>Ore residue:</strong> ${cliente.ore_residue}</p>
           </div>
 
           <table>
