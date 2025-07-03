@@ -6,7 +6,8 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public'))); // Serve file statici (style.css, script.js)
+app.use('/CSS', express.static(path.join(__dirname, 'public/css')));
+app.use('/JS', express.static(path.join(__dirname, 'public/js')));
 
 // Routes
 const clientiRoutes = require('./routes/clienti');
