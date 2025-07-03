@@ -331,3 +331,53 @@ td:last-child {
 .btn-danger:hover {
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
 }
+
+/* Migliora layout dei bottoni in tabella */
+td:last-child {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+/* Spaziatura tra bottoni azione */
+td:last-child button,
+td:last-child form {
+  margin-bottom: 0.5rem;
+}
+
+/* Evita overflow input */
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form select {
+  width: 100%;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* Responsive fix per evitare che i bottoni si accavallino */
+@media (max-width: 768px) {
+  td:last-child {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  button,
+  input[type="submit"] {
+    width: 100%;
+  }
+}
+
+/* Per evitare overflow su input lunghi */
+input[type="email"],
+input[type="text"] {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+form input[type="email"] {
+  width: 100%;
+}
+
+.green{
+  color: green;
+}
