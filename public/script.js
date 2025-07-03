@@ -86,7 +86,7 @@ document.getElementById('form-intervento').addEventListener('submit', e => {
     const ore_residue = parseFloat(selectedOption.dataset.oreResidue);
 
     if (ore_utilizzate > ore_residue) {
-        alert('Non puoi abilitare quelle ore: ore residue insufficienti!');
+        alert(`Non puoi abilitare quelle ore: ore residue insufficienti ore (${ore_residue})!`);
         return;
     }
 
