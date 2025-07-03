@@ -6,8 +6,8 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/CSS', express.static(path.join(__dirname, 'public/css')));
-app.use('/JS', express.static(path.join(__dirname, 'public/js')));
+app.use('/CSS', express.static(path.join(__dirname, 'public/CSS')));
+app.use('/JS', express.static(path.join(__dirname, 'public/JS')));
 
 // Routes
 const clientiRoutes = require('./routes/clienti');
