@@ -58,16 +58,6 @@ function salvaCliente(id, btn) {
     }).then(() => caricaClienti());
 }
 
-function ripristinaOre(id, oreAcquistate) {
-    if (confirm(`Ripristinare le ore residue a ${oreAcquistate}?`)) {
-        fetch(`/ripristina_ore/${id}`, {
-            method: 'POST'
-        }).then(() => {
-            alert(`Le ore residue sono state ripristinate a ${oreAcquistate}`);
-            caricaClienti();
-        });
-    }
-}
 
 document.getElementById('form-cliente').addEventListener('submit', e => {
     e.preventDefault();
@@ -113,17 +103,6 @@ function confermaEliminazioneTotale() {
     if (confirm("Confermi l'eliminazione di TUTTI I DATI?")) {
         fetch('/delete_all', { method: 'POST' }).then(() => {
             alert('Tutti i dati eliminati');
-            caricaClienti();
-        });
-    }
-}
-
-function RipstinaPunteggitutti() {
-    if (confirm("Sei sicuro di voler ripristinare tutte le ore acquistate come residue?")) {
-        fetch('/ripristina_ore_tutti', {
-            method: 'POST'
-        }).then(() => {
-            alert("Ore ripristinate per tutti i clienti.");
             caricaClienti();
         });
     }
