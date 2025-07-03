@@ -24,7 +24,7 @@ async function caricaClienti() {
         <td><input type="text" value="${c.indirizzo}"></td>
         <td><input type="email" value="${c.email}"></td>
         <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
-        <td>${oreUtilizzate}</td>
+        <td class="red">${oreUtilizzate}</td>
         <td class="green">${c.ore_residue.toFixed(1)}</td>
         <td>
         <button onclick="salvaCliente(${c.id}, this)">Salva</button>

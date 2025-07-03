@@ -381,3 +381,7 @@ form input[type="email"] {
 .green{
   color: green;
 }
+
+.red{
+  color: #ef4444;
+}
