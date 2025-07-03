@@ -1,4 +1,3 @@
-// routes/report.js CON UI/UX MIGLIORATA + ALERT CONFERMA + VISUALIZZAZIONE ORE
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
@@ -22,7 +21,7 @@ router.get('/report_cliente/:id', (req, res) => {
           <td>${i.tipo_servizio}</td>
           <td>${i.ore_utilizzate}</td>
           <td>
-            <form method="POST" action="/report_cliente/${clienteId}/elimina_intervento/${i.id}" style="display:inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo intervento?')">
+            <form method="POST" action="/report_cliente/${clienteId}/elimina_intervento/${i.id}" data-confirm="Sei sicuro di voler eliminare questo intervento?" style="display:inline">
               <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
             </form>
           </td>
@@ -35,94 +34,10 @@ router.get('/report_cliente/:id', (req, res) => {
         <head>
           <meta charset="UTF-8">
           <title>Report Cliente</title>
-          <style>
-            body {
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              background: #f9fafb;
-              color: #111827;
-              padding: 2rem;
-              line-height: 1.6;
-            }
-            h1 {
-              font-size: 1.8rem;
-              color: #1f2937;
-            }
-            .cliente-info {
-              background: #e5e7eb;
-              padding: 1rem;
-              border-radius: 8px;
-              margin-bottom: 1.5rem;
-            }
-            .cliente-info p {
-              margin: 4px 0;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              background: white;
-              border-radius: 8px;
-              overflow: hidden;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            }
-            th, td {
-              padding: 12px 16px;
-              border-bottom: 1px solid #e5e7eb;
-              text-align: left;
-            }
-            th {
-              background: #f3f4f6;
-              font-weight: 600;
-            }
-            tr:last-child td {
-              border-bottom: none;
-            }
-            .btn {
-              padding: 6px 12px;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-size: 0.9rem;
-            }
-            .btn-danger {
-              background: #ef4444;
-              color: white;
-            }
-            .btn-danger:hover {
-              background: #dc2626;
-            }
-            .btn-secondary {
-              background: #6b7280;
-              color: white;
-              margin-top: 1rem;
-            }
-            .btn-secondary:hover {
-              background: #4b5563;
-            }
-            .print {
-              margin-top: 2rem;
-              padding: 8px 16px;
-              font-size: 1rem;
-              background: #3b82f6;
-              color: white;
-              border: none;
-              border-radius: 6px;
-              cursor: pointer;
-            }
-            .print:hover {
-              background: #2563eb;
-            }
-            .summary-box {
-              background: #d1fae5;
-              padding: 1rem;
-              border-radius: 8px;
-              margin-top: 1rem;
-              font-weight: 500;
-              color: #065f46;
-            }
-          </style>
+          <link rel="stylesheet" href="/CSS/report.css">
         </head>
         <body>
-        <body>
+
           <a href="/" class="btn btn-secondary" style="margin-bottom: 1rem;">← Torna alla Home</a>
 
           <h1>Report Cliente: ${cliente.ragione_sociale}</h1>
@@ -152,12 +67,28 @@ router.get('/report_cliente/:id', (req, res) => {
             </tbody>
           </table>
 
-          <form method="POST" action="/report_cliente/${clienteId}/elimina_tutti_interventi" onsubmit="return confirm('Confermi l\'eliminazione di TUTTI gli interventi di questo cliente?')">
+          <form method="POST" action="/report_cliente/${clienteId}/elimina_tutti_interventi" data-confirm="Confermi l'eliminazione di TUTTI gli interventi di questo cliente?">
             <button class="btn btn-secondary">Elimina Tutti gli Interventi</button>
           </form>
 
           <button class="print" onclick="window.print()">🖨️ Stampa</button>
-        </body></html>
+
+          <!-- Modale di conferma -->
+          <div id="confirmModal" class="modal hidden">
+            <div class="modal-content">
+              <p id="confirmMessage">Sei sicuro?</p>
+              <div class="modal-actions">
+                <button id="confirmYes" class="btn btn-danger">Sì</button>
+                <button id="confirmNo" class="btn btn-secondary">Annulla</button>
+              </div>
+            </div>
+          </div>
+
+          <script src="/JS/report.js">
+          </script>
+
+        </body>
+        </html>
       `;
 
             res.send(html);
