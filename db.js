@@ -1,6 +1,6 @@
 // db.js
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./gestione_ore.sqlite');
+const db = new sqlite3.Database('./gestione_ore.db');
 
 // Creazione automatica delle tabelle se non esistono
 db.serialize(() => {
