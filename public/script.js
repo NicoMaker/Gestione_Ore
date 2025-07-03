@@ -4,32 +4,36 @@ async function caricaClienti() {
     const tbody = document.querySelector('#tabella-clienti tbody');
     const select = document.getElementById('cliente_id');
     tbody.innerHTML = '';
-    select.innerHTML = '<option value="">-- Seleziona Cliente -- </option>';
+    select.innerHTML = '<option value="">-- Seleziona Cliente --</option>';
 
     data.forEach(c => {
-        // Select
+        // Popola <select> per interventi
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.ragione_sociale;
-        opt.dataset.oreResidue = c.ore_residue;
+        opt.dataset.oreResidue = c.ore_residue; // IMPORTANTE
         select.appendChild(opt);
 
-        // Table row
+        // Calcolo ore utilizzate
+        const oreUtilizzate = (c.ore_acquistate - c.ore_residue).toFixed(1);
+
+        // Popola riga tabella
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><input type="text" value="${c.ragione_sociale}"></td>
-          <td><input type="text" value="${c.indirizzo}"></td>
-          <td><input type="email" value="${c.email}"></td>
-          <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
-          <td>${c.ore_residue}</td>
-          <td>
-            <button onclick="salvaCliente(${c.id}, this)">Salva</button>
-            <button onclick="ripristinaOre(${c.id}, ${c.ore_acquistate})">Ripristina Ore</button>
-            <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
-              <input type="submit" value="Elimina" class="secondary">
-            </form>
-          </td>
-        `;
+      <td><input type="text" value="${c.ragione_sociale}"></td>
+      <td><input type="text" value="${c.indirizzo}"></td>
+      <td><input type="email" value="${c.email}"></td>
+      <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
+      <td>${oreUtilizzate}</td>
+      <td>${c.ore_residue.toFixed(1)}</td>
+      <td>
+        <button onclick="salvaCliente(${c.id}, this)">Salva</button>
+        <button onclick="ripristinaOre(${c.id}, ${c.ore_acquistate})">Ripristina Ore</button>
+        <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
+          <input type="submit" value="Elimina" class="secondary">
+        </form>
+      </td>
+    `;
         tbody.appendChild(tr);
     });
 }
@@ -82,11 +86,17 @@ document.getElementById('form-intervento').addEventListener('submit', e => {
     const form = new FormData(e.target);
     const cliente_id = form.get('cliente_id');
     const ore_utilizzate = parseFloat(form.get('ore_utilizzate'));
+
     const selectedOption = e.target.cliente_id.selectedOptions[0];
     const ore_residue = parseFloat(selectedOption.dataset.oreResidue);
 
+    if (isNaN(ore_residue)) {
+        alert("Errore: ore residue non disponibili.");
+        return;
+    }
+
     if (ore_utilizzate > ore_residue) {
-        alert(`Non puoi abilitare quelle ore: ore residue insufficienti ore (${ore_residue})!`);
+        alert(`Non puoi registrare quelle ore: residue disponibili ${ore_residue}`);
         return;
     }
 
@@ -99,8 +109,6 @@ document.getElementById('form-intervento').addEventListener('submit', e => {
     });
 });
 
-caricaClienti();
-
 function confermaEliminazioneTotale() {
     if (confirm('Confermi l\'eliminazione di TUTTI I DATI?')) {
         fetch('/delete_all', { method: 'POST' })
@@ -112,21 +120,14 @@ function confermaEliminazioneTotale() {
 }
 
 function RipstinaPunteggitutti() {
-    if (confirm("Sei sicuro di voler ripristinare le ore residue per tutti i clienti?")) {
+    if (confirm("Sei sicuro di voler ripristinare tutte le ore acquistate come residue?")) {
         fetch('/ripristina_ore_tutti', {
-            method: 'POST',
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Ore residue ripristinate per tutti i clienti.');
-                    location.reload(); // Ricarica la pagina per vedere gli aggiornamenti
-                } else {
-                    alert('Errore durante il ripristino delle ore.');
-                }
-            })
-            .catch(error => {
-                console.error('Errore nella richiesta:', error);
-                alert('Errore nella richiesta.');
-            });
+            method: 'POST'
+        }).then(() => {
+            alert("Ore ripristinate per tutti i clienti.");
+            caricaClienti();
+        });
     }
 }
+
+caricaClienti();
