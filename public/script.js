@@ -38,9 +38,8 @@ async function caricaClienti() {
     });
 }
 
-function confermaEliminazione() {
-    return confirm('Sei sicuro di voler eliminare questo cliente?');
-}
+const confermaEliminazione = () =>
+    confirm('Sei sicuro di voler eliminare questo cliente?');
 
 function salvaCliente(id, btn) {
     const tr = btn.closest('tr');
