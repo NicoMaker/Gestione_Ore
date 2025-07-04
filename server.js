@@ -1,31 +1,41 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+const express = require("express")
+const bodyParser = require("body-parser")
+const path = require("path")
+const multer = require("multer")
 
-const app = express();
+const app = express()
+
+// Configure multer for form data parsing
+const upload = multer()
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/CSS', express.static(path.join(__dirname, 'public/CSS')));
-app.use('/JS', express.static(path.join(__dirname, 'public/JS')));
-app.use('/', express.static(path.join(__dirname, 'pubblic')));
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(upload.none()) // For parsing multipart/form-data without files
+app.use("/css", express.static(path.join(__dirname, "public/css")))
+app.use("/js", express.static(path.join(__dirname, "public/js")))
+app.use("/assets", express.static(path.join(__dirname, "public/assets")))
 
 // Routes
-const clientiRoutes = require('./routes/clienti');
-const interventiRoutes = require('./routes/interventi');
-const reportRoutes = require('./routes/report');
+const clientiRoutes = require("./routes/clienti")
+const interventiRoutes = require("./routes/interventi")
+const reportRoutes = require("./routes/report")
 
-app.use('/', clientiRoutes);
-app.use('/', interventiRoutes);
-app.use('/', reportRoutes);
+app.use("/", clientiRoutes)
+app.use("/", interventiRoutes)
+app.use("/", reportRoutes)
 
-// Pagina principale (index.html)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
+// Pages
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"))
+})
 
-// Avvio server
-const PORT = 3000;
+app.get("/contratti", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "contratti.html"))
+})
+
+// Start server
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-    console.log(`Server avviato su http://localhost:${PORT}`);
-});
+  console.log(`Server running on http://localhost:${PORT}`)
+})

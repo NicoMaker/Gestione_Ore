@@ -1,161 +1,131 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../db');
+const express = require("express")
+const router = express.Router()
+const db = require("../db")
+const path = require("path")
 
-// Mostra il report cliente
-router.get('/report_cliente/:id', (req, res) => {
-  const clienteId = req.params.id;
-  const queryCliente = 'SELECT * FROM clienti WHERE id = ?';
-  const queryInterventi = 'SELECT * FROM interventi WHERE cliente_id = ?';
+// Show client report page
+router.get("/report_cliente/:id", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views", "report.html"))
+})
+
+// API: Get client report data
+router.get("/api/report_cliente/:id", (req, res) => {
+  const clienteId = req.params.id
+
+  const queryCliente = "SELECT * FROM clienti WHERE id = ?"
+  const queryInterventi = `
+    SELECT *, datetime(data_intervento, 'localtime') as data_formattata 
+    FROM interventi 
+    WHERE cliente_id = ? 
+    ORDER BY data_intervento DESC
+  `
 
   db.get(queryCliente, [clienteId], (err, cliente) => {
-    if (err || !cliente) return res.status(500).send("Errore cliente");
-
-    db.all(queryInterventi, [clienteId], (err2, interventi) => {
-      if (err2) return res.status(500).send("Errore interventi");
-
-      const totaleUsato = interventi.reduce((acc, intv) => acc + intv.ore_utilizzate, 0);
-      const statoColore = cliente.ore_residue > 0 ? 'verde' : 'rosso';
-
-      const righe = interventi.map(i => {
-        return `
-          <tr>
-            <td>
-              <form method="POST" action="/report_cliente/${cliente.id}/modifica_intervento/${i.id}" style="display:flex; flex-direction:column; gap:4px;">
-                <input type="text" name="tipo_servizio" value="${i.tipo_servizio}" required>
-            </td>
-            <td>
-                <input type="number" step="0.1" name="ore_utilizzate" value="${i.ore_utilizzate}" required>
-            </td>
-            <td style="display:flex; flex-direction:column; gap:4px;">
-                <button type="submit" class="btn btn-sm">💾 Salva</button>
-              </form>
-              <form method="POST" action="/report_cliente/${cliente.id}/elimina_intervento/${i.id}" data-confirm="Sei sicuro di voler eliminare questo intervento?">
-                <button type="submit" class="btn btn-danger btn-sm">🗑️ Elimina</button>
-              </form>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      res.send(`
-        <!DOCTYPE html>
-        <html lang="it">
-        <head>
-          <meta charset="UTF-8">
-          <title>Report Cliente</title>
-          <link rel="stylesheet" href="/CSS/report.css">
-        </head>
-        <body>
-          <a href="/" class="btn btn-secondary" style="margin-bottom: 1rem;">← Torna alla Home</a>
-          <h1>
-            Report Cliente: ${cliente.ragione_sociale}
-            <span class="stato-pallino ${statoColore}" title="Stato cliente"></span>
-          </h1>
-
-          <div class="cliente-info">
-            <p><strong>Email:</strong> ${cliente.email}</p>
-            <p><strong>Indirizzo:</strong> ${cliente.indirizzo}</p>
-            <p><strong>Ore acquistate:</strong> ${cliente.ore_acquistate}</p>
-            <p> <strong> Ore utilizzate:</strong> ${cliente.ore_acquistate - cliente.ore_residue}</p>
-            <p><strong>Ore residue:</strong> ${cliente.ore_residue}</p>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Tipo Servizio</th>
-                <th>Ore Utilizzate</th>
-                <th>Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${righe}
-              <tr>
-                <td><strong>TOTALE</strong></td>
-                <td><strong>${totaleUsato.toFixed(1)}</strong></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <form method="POST" action="/report_cliente/${clienteId}/elimina_tutti_interventi" data-confirm="Confermi l'eliminazione di TUTTI gli interventi di questo cliente?">
-            <button class="btn btn-secondary">Elimina Tutti gli Interventi</button>
-          </form>
-
-          <button class="print" onclick="window.print()">🖨️ Stampa</button>
-
-          <div id="confirmModal" class="modal hidden">
-            <div class="modal-content">
-              <p id="confirmMessage">Sei sicuro?</p>
-              <div class="modal-actions">
-                <button id="confirmYes" class="btn btn-danger">Sì</button>
-                <button id="confirmNo" class="btn btn-secondary">Annulla</button>
-              </div>
-            </div>
-          </div>
-
-          <script src="/JS/report_Frot.js"></script>
-        </body>
-        </html>
-      `);
-    });
-  });
-});
-
-// Modifica intervento
-router.post('/report_cliente/:clienteId/modifica_intervento/:interventoId', (req, res) => {
-  const { clienteId, interventoId } = req.params;
-  const { tipo_servizio, ore_utilizzate } = req.body;
-
-  db.get('SELECT i.ore_utilizzate, c.ore_residue FROM interventi i JOIN clienti c ON i.cliente_id = c.id WHERE i.id = ?', [interventoId], (err, row) => {
-    if (err || !row) return res.redirect(`/report_cliente/${clienteId}`);
-
-    const differenza = parseFloat(ore_utilizzate) - row.ore_utilizzate;
-    const nuoveResidue = row.ore_residue - differenza;
-
-    if (nuoveResidue < 0) {
-      return res.send(`<script>alert("Errore: ore insufficienti."); window.location.href='/report_cliente/${clienteId}';</script>`);
+    if (err) {
+      return res.status(500).json({ error: "Errore nel caricamento del cliente" })
     }
 
-    db.run('UPDATE interventi SET tipo_servizio = ?, ore_utilizzate = ? WHERE id = ?', [tipo_servizio, ore_utilizzate, interventoId], err2 => {
-      if (err2) return res.redirect(`/report_cliente/${clienteId}`);
+    if (!cliente) {
+      return res.status(404).json({ error: "Cliente non trovato" })
+    }
 
-      db.run('UPDATE clienti SET ore_residue = ? WHERE id = ?', [nuoveResidue, clienteId], () => {
-        res.redirect(`/report_cliente/${clienteId}`);
-      });
-    });
-  });
-});
+    db.all(queryInterventi, [clienteId], (err2, interventi) => {
+      if (err2) {
+        return res.status(500).json({ error: "Errore nel caricamento degli interventi" })
+      }
 
-// Elimina un singolo intervento
-router.post('/report_cliente/:clienteId/elimina_intervento/:interventoId', (req, res) => {
-  const { clienteId, interventoId } = req.params;
-  db.get('SELECT ore_utilizzate FROM interventi WHERE id = ?', [interventoId], (err, row) => {
-    if (err || !row) return res.redirect(`/report_cliente/${clienteId}`);
-    const ore = row.ore_utilizzate;
+      const totaleUsato = interventi.reduce((acc, intv) => acc + intv.ore_utilizzate, 0)
 
-    db.run('DELETE FROM interventi WHERE id = ?', [interventoId], err2 => {
-      if (err2) return res.redirect(`/report_cliente/${clienteId}`);
-      db.run('UPDATE clienti SET ore_residue = ore_residue + ? WHERE id = ?', [ore, clienteId], () => {
-        res.redirect(`/report_cliente/${clienteId}`);
-      });
-    });
-  });
-});
+      res.json({
+        cliente: cliente,
+        interventi: interventi,
+        totaleUsato: totaleUsato,
+        percentualeUtilizzo: cliente.ore_acquistate > 0 ? ((totaleUsato / cliente.ore_acquistate) * 100).toFixed(1) : 0,
+      })
+    })
+  })
+})
 
-// Elimina tutti gli interventi
-router.post('/report_cliente/:clienteId/elimina_tutti_interventi', (req, res) => {
-  const { clienteId } = req.params;
-  db.get('SELECT SUM(ore_utilizzate) as totale FROM interventi WHERE cliente_id = ?', [clienteId], (err, row) => {
-    const totale = row && row.totale ? row.totale : 0;
-    db.run('DELETE FROM interventi WHERE cliente_id = ?', [clienteId], err2 => {
-      if (err2) return res.redirect(`/report_cliente/${clienteId}`);
-      db.run('UPDATE clienti SET ore_residue = ore_residue + ? WHERE id = ?', [totale, clienteId], () => {
-        res.redirect(`/report_cliente/${clienteId}`);
-      });
-    });
-  });
-});
+// Update intervention
+router.put("/api/interventi/:id", (req, res) => {
+  const { tipo_servizio, ore_utilizzate } = req.body
+  const interventoId = req.params.id
 
-module.exports = router;
+  // Get current intervention data
+  db.get(
+    "SELECT i.ore_utilizzate, i.cliente_id, c.ore_residue FROM interventi i JOIN clienti c ON i.cliente_id = c.id WHERE i.id = ?",
+    [interventoId],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: err.message })
+      }
+
+      if (!row) {
+        return res.status(404).json({ error: "Intervento non trovato" })
+      }
+
+      const differenza = Number.parseFloat(ore_utilizzate) - row.ore_utilizzate
+      const nuove_residue = row.ore_residue - differenza
+
+      if (nuove_residue < 0) {
+        return res.status(400).json({ error: "Ore insufficienti" })
+      }
+
+      // Update intervention
+      db.run(
+        "UPDATE interventi SET tipo_servizio = ?, ore_utilizzate = ? WHERE id = ?",
+        [tipo_servizio, Number.parseFloat(ore_utilizzate), interventoId],
+        (err2) => {
+          if (err2) {
+            return res.status(500).json({ error: err2.message })
+          }
+
+          // Update client remaining hours
+          db.run("UPDATE clienti SET ore_residue = ? WHERE id = ?", [nuove_residue, row.cliente_id], (err3) => {
+            if (err3) {
+              return res.status(500).json({ error: err3.message })
+            }
+            res.json({ success: true })
+          })
+        },
+      )
+    },
+  )
+})
+
+// Delete intervention
+router.delete("/api/interventi/:id", (req, res) => {
+  const interventoId = req.params.id
+
+  // Get intervention data before deletion
+  db.get("SELECT cliente_id, ore_utilizzate FROM interventi WHERE id = ?", [interventoId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message })
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Intervento non trovato" })
+    }
+
+    // Delete intervention
+    db.run("DELETE FROM interventi WHERE id = ?", [interventoId], (err2) => {
+      if (err2) {
+        return res.status(500).json({ error: err2.message })
+      }
+
+      // Restore hours to client
+      db.run(
+        "UPDATE clienti SET ore_residue = ore_residue + ? WHERE id = ?",
+        [row.ore_utilizzate, row.cliente_id],
+        (err3) => {
+          if (err3) {
+            return res.status(500).json({ error: err3.message })
+          }
+          res.json({ success: true })
+        },
+      )
+    })
+  })
+})
+
+module.exports = router

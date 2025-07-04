@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Cliente - Sistema Assistenza</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/report.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar no-print">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Sistema Assistenza</h2>
+            </div>
+            <div class="nav-actions">
+                <a href="/" class="btn btn-secondary">← Torna ai Clienti</a>
+                <button onclick="window.print()" class="btn btn-primary">🖨️ Stampa Report</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Client Info -->
+            <section class="client-info-section">
+                <div class="client-info-card">
+                    <div class="client-header">
+                        <h1 id="client-name">Caricamento...</h1>
+                        <div id="client-status" class="status-badge"></div>
+                    </div>
+                    <div class="client-details">
+                        <div class="detail-item">
+                            <label>Email:</label>
+                            <span id="client-email">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Indirizzo:</label>
+                            <span id="client-address">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Ore Acquistate:</label>
+                            <span id="client-purchased-hours" class="hours-value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Ore Utilizzate:</label>
+                            <span id="client-used-hours" class="hours-value text-danger">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Ore Residue:</label>
+                            <span id="client-remaining-hours" class="hours-value text-success">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Percentuale Utilizzo:</label>
+                            <span id="client-usage-percentage" class="percentage-value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Bar -->
+            <section class="progress-section">
+                <div class="progress-card">
+                    <h3>Utilizzo Ore</h3>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>0%</span>
+                        <span>50%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interventions Table -->
+            <section class="interventions-section">
+                <div class="interventions-card">
+                    <div class="interventions-header">
+                        <h2>Storico Interventi</h2>
+                        <div class="interventions-summary">
+                            <span>Totale interventi: <strong id="total-interventions">0</strong></span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabella-interventi" class="interventions-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo Servizio</th>
+                                    <th>Ore Utilizzate</th>
+                                    <th class="no-print">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section class="actions-section no-print">
+                <div class="actions-card">
+                    <h3>Azioni</h3>
+                    <div class="action-buttons">
+                        <button onclick="eliminaTuttiInterventi()" class="btn btn-danger">
+                            Elimina Tutti gli Interventi
+                        </button>
+                        <button onclick="esportaReport()" class="btn btn-secondary">
+                            Esporta Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Modifica Intervento</h3>
+            <form id="edit-form">
+                <div class="form-group">
+                    <label for="edit-tipo-servizio">Tipo Servizio:</label>
+                    <input type="text" id="edit-tipo-servizio" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ore-utilizzate">Ore Utilizzate:</label>
+                    <input type="number" id="edit-ore-utilizzate" step="0.1" min="0.1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Salva</button>
+                    <button type="button" onclick="hideEditModal()" class="btn btn-secondary">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="confirm-title">Conferma</h3>
+            <p id="confirm-message">Sei sicuro di voler procedere?</p>
+            <div class="modal-actions">
+                <button id="confirm-yes" class="btn btn-danger">Conferma</button>
+                <button id="confirm-no" class="btn btn-secondary">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div id="alert" class="alert hidden">
+        <div class="alert-content">
+            <span id="alert-message"></span>
+            <button id="alert-close" class="alert-close">&times;</button>
+        </div>
+    </div>
+
+    <script src="/js/report.js"></script>
+</body>
+
+</html>

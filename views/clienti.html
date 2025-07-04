@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Ore Clienti - Sistema Assistenza</title>
+    <title>Clienti - Sistema Assistenza</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,22 +26,22 @@
                     <a href="/contratti" class="nav-link">Contratti</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Interventi a contratto</a>
+                    <a href="/interventi-contratto" class="nav-link">Interventi a contratto</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Elenco interventi a contratto</a>
+                    <a href="/elenco-interventi" class="nav-link">Elenco interventi a contratto</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Situazione contratti</a>
+                    <a href="/situazione-contratti" class="nav-link">Situazione contratti</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Interventi fuori contratto</a>
+                    <a href="/interventi-fuori-contratto" class="nav-link">Interventi fuori contratto</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Appunti</a>
+                    <a href="/appunti" class="nav-link">Appunti</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Fatturazioni</a>
+                    <a href="/fatturazioni" class="nav-link">Fatturazioni</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -61,9 +61,9 @@
                     <h2 class="form-title">Anagrafica Clienti</h2>
                     <form id="form-cliente" class="form">
                         <div class="form-group">
-                            <label for="ragione_sociale">Ragione Sociale</label>
+                            <label for="ragione_sociale">Ragione Sociale *</label>
                             <input type="text" id="ragione_sociale" name="ragione_sociale"
-                                placeholder="Inserisci ragione sociale">
+                                placeholder="Inserisci ragione sociale" required>
                         </div>
                         <div class="form-group">
                             <label for="indirizzo">Indirizzo</label>
@@ -74,9 +74,9 @@
                             <input type="email" id="email" name="email" placeholder="Inserisci email">
                         </div>
                         <div class="form-group">
-                            <label for="ore_acquistate">Ore Acquistate</label>
-                            <input type="number" id="ore_acquistate" name="ore_acquistate" step="0.1"
-                                placeholder="Inserisci ore acquistate">
+                            <label for="ore_acquistate">Ore Acquistate *</label>
+                            <input type="number" id="ore_acquistate" name="ore_acquistate" step="0.1" min="0"
+                                placeholder="Inserisci ore acquistate" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Aggiungi Cliente</button>
                     </form>
@@ -89,20 +89,20 @@
                     <h2 class="form-title">Registra Intervento</h2>
                     <form id="form-intervento" class="form">
                         <div class="form-group">
-                            <label for="cliente_id">Seleziona Cliente</label>
-                            <select id="cliente_id" name="cliente_id">
+                            <label for="cliente_id">Seleziona Cliente *</label>
+                            <select id="cliente_id" name="cliente_id" required>
                                 <option value="">-- Seleziona Cliente --</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="tipo_servizio">Tipo Servizio</label>
+                            <label for="tipo_servizio">Tipo Servizio *</label>
                             <input type="text" id="tipo_servizio" name="tipo_servizio"
-                                placeholder="Inserisci tipo servizio">
+                                placeholder="Inserisci tipo servizio" required>
                         </div>
                         <div class="form-group">
-                            <label for="ore_utilizzate">Ore Utilizzate</label>
-                            <input type="number" id="ore_utilizzate" name="ore_utilizzate" step="0.1"
-                                placeholder="Inserisci ore utilizzate">
+                            <label for="ore_utilizzate">Ore Utilizzate *</label>
+                            <input type="number" id="ore_utilizzate" name="ore_utilizzate" step="0.1" min="0.1"
+                                placeholder="Inserisci ore utilizzate" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Registra Intervento</button>
                     </form>
@@ -160,7 +160,7 @@
         </div>
     </div>
 
-    <script src="/js/main.js"></script>
+    <script src="/js/clienti.js"></script>
 </body>
 
 </html>

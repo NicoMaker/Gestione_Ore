@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interventi a Contratto - Sistema Assistenza</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Sistema Assistenza</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">Clienti</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/contratti" class="nav-link">Contratti</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/interventi-contratto" class="nav-link active">Interventi a contratto</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/elenco-interventi" class="nav-link">Elenco interventi a contratto</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/situazione-contratti" class="nav-link">Situazione contratti</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/interventi-fuori-contratto" class="nav-link">Interventi fuori contratto</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/appunti" class="nav-link">Appunti</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/fatturazioni" class="nav-link">Fatturazioni</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <section class="page-section">
+                <div class="page-card">
+                    <h1 class="page-title">Interventi a Contratto</h1>
+                    <p class="page-description">Gestione degli interventi programmati per i clienti con contratto
+                        attivo.</p>
+
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-active-contracts">0</div>
+                            <div class="stat-label">Contratti Attivi</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-pending-interventions">0</div>
+                            <div class="stat-label">Interventi Programmati</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-available-hours">0</div>
+                            <div class="stat-label">Ore Disponibili</div>
+                        </div>
+                    </div>
+
+                    <!-- Intervention Form -->
+                    <div class="form-card">
+                        <h2 class="form-title">Programma Nuovo Intervento</h2>
+                        <form id="form-intervento-programmato" class="form">
+                            <div class="form-group">
+                                <label for="cliente_programmato">Cliente</label>
+                                <select id="cliente_programmato" name="cliente_id" required>
+                                    <option value="">-- Seleziona Cliente --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="data_programmata">Data Programmata</label>
+                                <input type="datetime-local" id="data_programmata" name="data_programmata" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo_servizio_programmato">Tipo Servizio</label>
+                                <input type="text" id="tipo_servizio_programmato" name="tipo_servizio"
+                                    placeholder="Descrizione del servizio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ore_stimate">Ore Stimate</label>
+                                <input type="number" id="ore_stimate" name="ore_stimate" step="0.1" min="0.1"
+                                    placeholder="Ore previste" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="note_intervento">Note</label>
+                                <textarea id="note_intervento" name="note" placeholder="Note aggiuntive"
+                                    rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Programma Intervento</button>
+                        </form>
+                    </div>
+
+                    <!-- Scheduled Interventions Table -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h2 class="table-title">Interventi Programmati</h2>
+                            <div class="table-filters">
+                                <select id="filter-status">
+                                    <option value="">Tutti gli stati</option>
+                                    <option value="programmato">Programmato</option>
+                                    <option value="in-corso">In Corso</option>
+                                    <option value="completato">Completato</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="tabella-interventi-programmati" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Data Programmata</th>
+                                        <th>Tipo Servizio</th>
+                                        <th>Ore Stimate</th>
+                                        <th>Stato</th>
+                                        <th>Note</th>
+                                        <th>Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Alert -->
+    <div id="alert" class="alert hidden">
+        <div class="alert-content">
+            <span id="alert-message"></span>
+            <button id="alert-close" class="alert-close">&times;</button>
+        </div>
+    </div>
+
+    <script src="/js/interventi-contratto.js"></script>
+</body>
+
+</html>
