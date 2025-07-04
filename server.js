@@ -2,8 +2,10 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const path = require("path")
 const multer = require("multer")
-
+const dotenv = require("dotenv")
 const app = express()
+
+dotenv.config()
 
 // Configure multer for form data parsing
 const upload = multer()
@@ -33,6 +35,12 @@ app.get("/", (req, res) => {
 app.get("/contratti", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "contratti.html"))
 })
+
+if (!process.env.PORT) 
+  console.warn("⚠️  PORT non definito in .env. Uso porta di default 3000.");
+else
+  console.log("Porta: " + process.env.PORT);
+
 
 // Start server
 const PORT = process.env.PORT || 3000
