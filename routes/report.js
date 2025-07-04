@@ -46,47 +46,118 @@ router.get("/api/report_cliente/:id", (req, res) => {
   })
 })
 
-// Update intervention
+// API: Get single intervention data - NUOVA ROUTE
+router.get("/api/interventi/:id", (req, res) => {
+  const interventoId = req.params.id
+
+  const query = `
+    SELECT i.*, c.ore_acquistate, c.ragione_sociale
+    FROM interventi i
+    JOIN clienti c ON i.cliente_id = c.id
+    WHERE i.id = ?
+  `
+
+  db.get(query, [interventoId], (err, intervento) => {
+    if (err) {
+      return res.status(500).json({ error: "Errore nel caricamento dell'intervento" })
+    }
+
+    if (!intervento) {
+      return res.status(404).json({ error: "Intervento non trovato" })
+    }
+
+    res.json({
+      success: true,
+      intervento: intervento,
+    })
+  })
+})
+
+// API: Update intervention with enhanced validation - MIGLIORATA
 router.put("/api/interventi/:id", (req, res) => {
   const { tipo_servizio, ore_utilizzate } = req.body
   const interventoId = req.params.id
 
-  // Get current intervention data
+  // Validazione input
+  if (!tipo_servizio || tipo_servizio.trim() === "") {
+    return res.status(400).json({ error: "Il tipo servizio è obbligatorio" })
+  }
+
+  const oreNum = Number.parseFloat(ore_utilizzate)
+  if (!oreNum || oreNum <= 0) {
+    return res.status(400).json({ error: "Le ore utilizzate devono essere maggiori di 0" })
+  }
+
+  // Get current intervention and client data
   db.get(
-    "SELECT i.ore_utilizzate, i.cliente_id, c.ore_residue FROM interventi i JOIN clienti c ON i.cliente_id = c.id WHERE i.id = ?",
+    `SELECT i.ore_utilizzate, i.cliente_id, c.ore_acquistate, c.ragione_sociale
+     FROM interventi i 
+     JOIN clienti c ON i.cliente_id = c.id 
+     WHERE i.id = ?`,
     [interventoId],
     (err, row) => {
       if (err) {
-        return res.status(500).json({ error: err.message })
+        return res.status(500).json({ error: "Errore database: " + err.message })
       }
 
       if (!row) {
         return res.status(404).json({ error: "Intervento non trovato" })
       }
 
-      const differenza = Number.parseFloat(ore_utilizzate) - row.ore_utilizzate
-      const nuove_residue = row.ore_residue - differenza
-
-      if (nuove_residue < 0) {
-        return res.status(400).json({ error: "Ore insufficienti" })
-      }
-
-      // Update intervention
-      db.run(
-        "UPDATE interventi SET tipo_servizio = ?, ore_utilizzate = ? WHERE id = ?",
-        [tipo_servizio, Number.parseFloat(ore_utilizzate), interventoId],
-        (err2) => {
+      // Calcola ore utilizzate dagli altri interventi
+      db.get(
+        `SELECT COALESCE(SUM(ore_utilizzate), 0) as total_other_hours 
+         FROM interventi 
+         WHERE cliente_id = ? AND id != ?`,
+        [row.cliente_id, interventoId],
+        (err2, otherHours) => {
           if (err2) {
-            return res.status(500).json({ error: err2.message })
+            return res.status(500).json({ error: "Errore calcolo ore: " + err2.message })
           }
 
-          // Update client remaining hours
-          db.run("UPDATE clienti SET ore_residue = ? WHERE id = ?", [nuove_residue, row.cliente_id], (err3) => {
-            if (err3) {
-              return res.status(500).json({ error: err3.message })
-            }
-            res.json({ success: true })
-          })
+          const totalOtherHours = otherHours.total_other_hours
+          const maxAvailableHours = row.ore_acquistate - totalOtherHours
+
+          // VALIDAZIONE PRINCIPALE: non superare le ore totali
+          if (oreNum > maxAvailableHours) {
+            return res.status(400).json({
+              error:
+                `Ore eccedenti! Massimo disponibile: ${maxAvailableHours.toFixed(1)} ore. ` +
+                `(Totali: ${row.ore_acquistate}, Già utilizzate: ${totalOtherHours.toFixed(1)})`,
+            })
+          }
+
+          // Calcola nuove ore residue
+          const differenza = oreNum - row.ore_utilizzate
+          const nuoveOreResidue = row.ore_acquistate - totalOtherHours - oreNum
+
+          // Aggiorna l'intervento
+          db.run(
+            "UPDATE interventi SET tipo_servizio = ?, ore_utilizzate = ? WHERE id = ?",
+            [tipo_servizio.trim(), oreNum, interventoId],
+            (err3) => {
+              if (err3) {
+                return res.status(500).json({ error: "Errore aggiornamento intervento: " + err3.message })
+              }
+
+              // Aggiorna le ore residue del cliente
+              db.run("UPDATE clienti SET ore_residue = ? WHERE id = ?", [nuoveOreResidue, row.cliente_id], (err4) => {
+                if (err4) {
+                  return res.status(500).json({ error: "Errore aggiornamento cliente: " + err4.message })
+                }
+
+                res.json({
+                  success: true,
+                  message: "Intervento aggiornato con successo",
+                  data: {
+                    ore_residue: nuoveOreResidue,
+                    ore_utilizzate: oreNum,
+                    tipo_servizio: tipo_servizio.trim(),
+                  },
+                })
+              })
+            },
+          )
         },
       )
     },
@@ -97,7 +168,6 @@ router.put("/api/interventi/:id", (req, res) => {
 router.delete("/api/interventi/:id", (req, res) => {
   const interventoId = req.params.id
 
-  // Get intervention data before deletion
   db.get("SELECT cliente_id, ore_utilizzate FROM interventi WHERE id = ?", [interventoId], (err, row) => {
     if (err) {
       return res.status(500).json({ error: err.message })
@@ -107,7 +177,6 @@ router.delete("/api/interventi/:id", (req, res) => {
       return res.status(404).json({ error: "Intervento non trovato" })
     }
 
-    // Delete intervention
     db.run("DELETE FROM interventi WHERE id = ?", [interventoId], (err2) => {
       if (err2) {
         return res.status(500).json({ error: err2.message })
@@ -121,9 +190,37 @@ router.delete("/api/interventi/:id", (req, res) => {
           if (err3) {
             return res.status(500).json({ error: err3.message })
           }
-          res.json({ success: true })
+          res.json({ success: true, message: "Intervento eliminato con successo" })
         },
       )
+    })
+  })
+})
+
+// Delete all interventions for a client
+router.delete("/api/clienti/:id/interventi", (req, res) => {
+  const clienteId = req.params.id
+
+  db.get("SELECT ore_acquistate FROM clienti WHERE id = ?", [clienteId], (err, cliente) => {
+    if (err) {
+      return res.status(500).json({ error: err.message })
+    }
+
+    if (!cliente) {
+      return res.status(404).json({ error: "Cliente non trovato" })
+    }
+
+    db.run("DELETE FROM interventi WHERE cliente_id = ?", [clienteId], (err2) => {
+      if (err2) {
+        return res.status(500).json({ error: err2.message })
+      }
+
+      db.run("UPDATE clienti SET ore_residue = ore_acquistate WHERE id = ?", [clienteId], (err3) => {
+        if (err3) {
+          return res.status(500).json({ error: err3.message })
+        }
+        res.json({ success: true, message: "Tutti gli interventi sono stati eliminati" })
+      })
     })
   })
 })

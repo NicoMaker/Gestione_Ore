@@ -2,6 +2,8 @@
 let currentClientId = null
 let currentEditingId = null
 let currentConfirmAction = null
+let clientData = null
+let currentInterventoData = null
 
 // DOM elements
 const clientName = document.getElementById("client-name")
@@ -21,6 +23,13 @@ const editModal = document.getElementById("edit-modal")
 const editForm = document.getElementById("edit-form")
 const editTipoServizio = document.getElementById("edit-tipo-servizio")
 const editOreUtilizzate = document.getElementById("edit-ore-utilizzate")
+const saveBtn = document.getElementById("save-btn")
+
+// Modal info elements
+const modalTotalHours = document.getElementById("modal-total-hours")
+const modalUsedHours = document.getElementById("modal-used-hours")
+const modalMaxHours = document.getElementById("modal-max-hours")
+const modalCurrentHours = document.getElementById("modal-current-hours")
 
 const confirmModal = document.getElementById("confirm-modal")
 const confirmTitle = document.getElementById("confirm-title")
@@ -67,10 +76,14 @@ function initializeEventListeners() {
         editForm.addEventListener("submit", handleEditSubmit)
     }
 
+    // Real-time validation for hours input
+    if (editOreUtilizzate) {
+        editOreUtilizzate.addEventListener("input", validateHoursInput)
+    }
+
     // Confirm modal
     if (confirmYes) confirmYes.addEventListener("click", handleConfirmYes)
     if (confirmNo) confirmNo.addEventListener("click", hideConfirmModal)
-
     // Alert
     if (alertClose) alertClose.addEventListener("click", hideAlert)
 
@@ -99,6 +112,7 @@ async function loadClientReport() {
         const data = await response.json()
 
         if (response.ok) {
+            clientData = data // Store globally
             updateClientInfo(data)
             updateInterventionsTable(data.interventi)
         } else {
@@ -182,7 +196,7 @@ function updateInterventionsTable(interventi) {
       <td class="hours-cell">${intervento.ore_utilizzate.toFixed(1)}</td>
       <td class="no-print">
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="editIntervento(${intervento.id}, '${intervento.tipo_servizio || ""}', ${intervento.ore_utilizzate})">
+          <button type="button" class="btn btn-primary btn-sm" onclick="Modifica(${intervento.id})">
             Modifica
           </button>
           <button type="button" class="btn btn-danger btn-sm" onclick="deleteIntervento(${intervento.id})">
@@ -208,12 +222,107 @@ function updateInterventionsTable(interventi) {
     tbody.appendChild(totalRow)
 }
 
-// Edit intervention
-function editIntervento(id, tipoServizio, oreUtilizzate) {
-    currentEditingId = id
-    if (editTipoServizio) editTipoServizio.value = tipoServizio
-    if (editOreUtilizzate) editOreUtilizzate.value = oreUtilizzate
-    showEditModal()
+// FUNZIONE MODIFICA - Quella che hai richiesto
+async function Modifica(interventoId) {
+    try {
+        // Carica i dati dell'intervento specifico
+        const response = await fetch(`/api/interventi/${interventoId}`)
+        const data = await response.json()
+
+        if (response.ok) {
+            currentEditingId = interventoId
+            currentInterventoData = data.intervento
+
+            // Popola il form
+            if (editTipoServizio) editTipoServizio.value = data.intervento.tipo_servizio || ""
+            if (editOreUtilizzate) editOreUtilizzate.value = data.intervento.ore_utilizzate
+
+            // Calcola e mostra le informazioni ore
+            updateModalHoursInfo(interventoId, data.intervento.ore_utilizzate)
+
+            showEditModal()
+        } else {
+            showAlert(data.error || "Errore nel caricamento dell'intervento", "error")
+        }
+    } catch (error) {
+        console.error("Error loading intervention:", error)
+        showAlert("Errore di connessione", "error")
+    }
+}
+
+// Aggiorna le informazioni ore nel modal
+function updateModalHoursInfo(interventoId, currentHours) {
+    if (!clientData) return
+
+    const { cliente, interventi } = clientData
+
+    // Calcola ore utilizzate dagli altri interventi
+    const otherInterventionsTotal = interventi
+        .filter((i) => i.id !== interventoId)
+        .reduce((acc, i) => acc + i.ore_utilizzate, 0)
+
+    // Ore massime disponibili per questo intervento
+    const maxAvailableHours = cliente.ore_acquistate - otherInterventionsTotal
+
+    // Aggiorna i valori nel modal
+    if (modalTotalHours) modalTotalHours.textContent = cliente.ore_acquistate.toFixed(1)
+    if (modalUsedHours) modalUsedHours.textContent = otherInterventionsTotal.toFixed(1)
+    if (modalMaxHours) modalMaxHours.textContent = maxAvailableHours.toFixed(1)
+    if (modalCurrentHours) modalCurrentHours.textContent = currentHours.toFixed(1)
+
+    // Imposta il massimo nell'input
+    if (editOreUtilizzate) {
+        editOreUtilizzate.max = maxAvailableHours
+    }
+}
+
+// Validate hours input in real-time
+function validateHoursInput() {
+    if (!editOreUtilizzate || !currentEditingId || !clientData) return
+
+    const inputValue = Number.parseFloat(editOreUtilizzate.value) || 0
+    const maxHours = Number.parseFloat(modalMaxHours.textContent) || 0
+
+    // Remove existing validation messages
+    const existingMsg = editOreUtilizzate.parentNode.querySelector(".validation-message")
+    if (existingMsg) {
+        existingMsg.remove()
+    }
+
+    // Remove class styles
+    editOreUtilizzate.classList.remove("input-error", "input-warning", "input-success")
+    saveBtn.disabled = false
+
+    let message = ""
+    let messageClass = ""
+
+    if (inputValue <= 0) {
+        message = "Le ore devono essere maggiori di 0"
+        messageClass = "error"
+        editOreUtilizzate.classList.add("input-error")
+        saveBtn.disabled = true
+    } else if (inputValue > maxHours) {
+        message = `ERRORE: Massimo ${maxHours.toFixed(1)} ore disponibili`
+        messageClass = "error"
+        editOreUtilizzate.classList.add("input-error")
+        saveBtn.disabled = true
+    } else if (inputValue > maxHours * 0.9) {
+        message = `Attenzione: rimangono solo ${(maxHours - inputValue).toFixed(1)} ore`
+        messageClass = "warning"
+        editOreUtilizzate.classList.add("input-warning")
+    } else {
+        message = `✓ Ore valide (${(maxHours - inputValue).toFixed(1)} ore rimarranno disponibili)`
+        messageClass = "success"
+        editOreUtilizzate.classList.add("input-success")
+    }
+
+    // Add message
+    if (message) {
+        const msg = document.createElement("div")
+        msg.className = `validation-message ${messageClass}`
+        msg.textContent = message
+        editOreUtilizzate.parentNode.appendChild(msg)
+    }
 }
 
 // Handle edit form submit
@@ -222,14 +331,20 @@ async function handleEditSubmit(e) {
 
     const tipoServizio = editTipoServizio.value.trim()
     const oreUtilizzate = Number.parseFloat(editOreUtilizzate.value)
+    const maxHours = Number.parseFloat(modalMaxHours.textContent) || 0
 
     if (!tipoServizio) {
-        showAlert("Tipo servizio è obbligatorio", "error")
+        showAlert("Il tipo servizio è obbligatorio", "error")
         return
     }
 
     if (!oreUtilizzate || oreUtilizzate <= 0) {
-        showAlert("Ore utilizzate deve essere maggiore di 0", "error")
+        showAlert("Le ore utilizzate devono essere maggiori di 0", "error")
+        return
+    }
+
+    if (oreUtilizzate > maxHours) {
+        showAlert(`Ore eccedenti! Massimo disponibile: ${maxHours.toFixed(1)} ore`, "error")
         return
     }
 
@@ -248,9 +363,9 @@ async function handleEditSubmit(e) {
         const result = await response.json()
 
         if (response.ok) {
-            showAlert("Intervento aggiornato con successo", "success")
+            showAlert("Intervento aggiornato con successo!", "success")
             hideEditModal()
-            loadClientReport()
+            loadClientReport() // Reload data
         } else {
             showAlert(result.error || "Errore nell'aggiornamento dell'intervento", "error")
         }
@@ -267,7 +382,6 @@ function deleteIntervento(id) {
     )
 }
 
-// Perform delete intervention
 async function performDeleteIntervento(id) {
     try {
         const response = await fetch(`/api/interventi/${id}`, {
@@ -288,7 +402,6 @@ async function performDeleteIntervento(id) {
     }
 }
 
-// Delete all interventions
 function eliminaTuttiInterventi() {
     showConfirmModal(
         "Conferma Eliminazione Totale",
@@ -297,7 +410,6 @@ function eliminaTuttiInterventi() {
     )
 }
 
-// Perform delete all interventions
 async function performDeleteAllInterventions() {
     try {
         const response = await fetch(`/api/clienti/${currentClientId}/interventi`, {
@@ -318,7 +430,6 @@ async function performDeleteAllInterventions() {
     }
 }
 
-// Export report
 function esportaReport() {
     window.print()
 }
@@ -335,6 +446,17 @@ function hideEditModal() {
         editModal.classList.add("hidden")
     }
     currentEditingId = null
+    currentInterventoData = null
+
+    // Clean up validation messages
+    const validationMsgs = editModal.querySelectorAll(".validation-message")
+    validationMsgs.forEach((msg) => msg.remove())
+
+    if (editOreUtilizzate) {
+        editOreUtilizzate.classList.remove("input-error", "input-warning", "input-success")
+    }
+
+    if (saveBtn) saveBtn.disabled = false
 }
 
 function showConfirmModal(title, message, confirmAction) {
@@ -368,7 +490,6 @@ function showAlert(message, type = "success") {
     alert.className = `alert alert-${type}`
     alert.classList.remove("hidden")
 
-    // Auto hide after 5 seconds
     setTimeout(() => {
         hideAlert()
     }, 5000)
