@@ -509,3 +509,8 @@
     box-shadow: none !important;
   }
 }
+
+td,
+.hours-cell{
+  text-align: center !important;
+}
