@@ -79,6 +79,14 @@ router.post("/update_cliente/:id", (req, res) => {
     }
 
     const ore_usate = row.ore_acquistate - row.ore_residue
+
+    // VALIDAZIONE: Non permettere di impostare ore acquistate minori delle ore già utilizzate
+    if (ore_acquistate_num < ore_usate) {
+      return res.status(400).json({
+        error: `Non puoi impostare ore acquistate (${ore_acquistate_num}) inferiori alle ore già utilizzate (${ore_usate.toFixed(1)}). Minimo consentito: ${ore_usate.toFixed(1)} ore.`,
+      })
+    }
+
     let nuove_ore_residue = ore_acquistate_num - ore_usate
     if (nuove_ore_residue < 0) nuove_ore_residue = 0
 

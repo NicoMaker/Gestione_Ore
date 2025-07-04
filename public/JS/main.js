@@ -1,11 +1,14 @@
 // Global variables
 let currentAction = null
+const editingClientId = null
+const originalClientData = {}
 
 // DOM elements
 const formCliente = document.getElementById("form-cliente")
 const formIntervento = document.getElementById("form-intervento")
 const tabellaClienti = document.getElementById("tabella-clienti")
 const clienteSelect = document.getElementById("cliente_id")
+const oreUtilizzateInput = document.getElementById("ore_utilizzate")
 const modal = document.getElementById("modal")
 const modalTitle = document.getElementById("modal-title")
 const modalMessage = document.getElementById("modal-message")
@@ -28,41 +31,103 @@ document.addEventListener("DOMContentLoaded", () => {
 // Event listeners
 function initializeEventListeners() {
     // Navigation
-    hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("active")
-        navMenu.classList.toggle("active")
-    })
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active")
+            navMenu.classList.toggle("active")
+        })
+    }
 
     // Forms
-    formCliente.addEventListener("submit", handleClienteSubmit)
-    formIntervento.addEventListener("submit", handleInterventoSubmit)
+    if (formCliente) {
+        formCliente.addEventListener("submit", handleClienteSubmit)
+    }
+
+    if (formIntervento) {
+        formIntervento.addEventListener("submit", handleInterventoSubmit)
+    }
+
+    // Real-time validation for intervention hours
+    if (oreUtilizzateInput) {
+        oreUtilizzateInput.addEventListener("input", validateInterventionHours)
+    }
+
+    if (clienteSelect) {
+        clienteSelect.addEventListener("change", updateMaxHours)
+    }
 
     // Modal
-    modalConfirm.addEventListener("click", handleModalConfirm)
-    modalCancel.addEventListener("click", hideModal)
+    if (modalConfirm) modalConfirm.addEventListener("click", handleModalConfirm)
+    if (modalCancel) modalCancel.addEventListener("click", hideModal)
 
     // Alert
-    alertClose.addEventListener("click", hideAlert)
+    if (alertClose) alertClose.addEventListener("click", hideAlert)
 
     // Close modal on outside click
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            hideModal()
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                hideModal()
+            }
+        })
+    }
+}
+
+// Update max hours for intervention form
+function updateMaxHours() {
+    const selectedOption = clienteSelect.selectedOptions[0]
+    if (selectedOption && selectedOption.dataset.oreResidue) {
+        const maxHours = Number.parseFloat(selectedOption.dataset.oreResidue)
+        oreUtilizzateInput.setAttribute("max", maxHours)
+        oreUtilizzateInput.setAttribute("title", `Massimo disponibile: ${maxHours.toFixed(1)} ore`)
+
+        // Clear any existing validation if hours are now valid
+        if (oreUtilizzateInput.value && Number.parseFloat(oreUtilizzateInput.value) <= maxHours) {
+            oreUtilizzateInput.setCustomValidity("")
         }
-    })
+    } else {
+        oreUtilizzateInput.removeAttribute("max")
+        oreUtilizzateInput.removeAttribute("title")
+    }
+}
+
+// Validate intervention hours in real-time
+function validateInterventionHours() {
+    const selectedOption = clienteSelect.selectedOptions[0]
+    const oreUtilizzate = Number.parseFloat(oreUtilizzateInput.value)
+
+    if (!selectedOption || !selectedOption.dataset.oreResidue) {
+        oreUtilizzateInput.setCustomValidity("Seleziona prima un cliente")
+        return false
+    }
+
+    const oreResidue = Number.parseFloat(selectedOption.dataset.oreResidue)
+
+    if (isNaN(oreUtilizzate) || oreUtilizzate <= 0) {
+        oreUtilizzateInput.setCustomValidity("Inserisci un numero di ore valido maggiore di 0")
+        return false
+    }
+
+    if (oreUtilizzate > oreResidue) {
+        oreUtilizzateInput.setCustomValidity(`Ore insufficienti. Disponibili: ${oreResidue.toFixed(1)} ore`)
+        return false
+    }
+
+    oreUtilizzateInput.setCustomValidity("")
+    return true
 }
 
 // Load clients
 async function caricaClienti() {
     try {
         const response = await fetch("/api/clienti")
-        const clienti = await response.json()
+        const result = await response.json()
 
         if (response.ok) {
-            updateClientiTable(clienti)
-            updateClienteSelect(clienti)
+            updateClientiTable(result)
+            updateClienteSelect(result)
         } else {
-            showAlert("Errore nel caricamento dei clienti", "error")
+            showAlert("Errore nel caricamento dei clienti: " + (result.error || "Errore sconosciuto"), "error")
         }
     } catch (error) {
         console.error("Error loading clients:", error)
@@ -72,6 +137,8 @@ async function caricaClienti() {
 
 // Update clients table
 function updateClientiTable(clienti) {
+    if (!tabellaClienti) return
+
     const tbody = tabellaClienti.querySelector("tbody")
     tbody.innerHTML = ""
 
@@ -91,18 +158,20 @@ function updateClientiTable(clienti) {
         const statoClass = cliente.ore_residue > 0 ? "status-success" : "status-danger"
 
         const row = document.createElement("tr")
+        row.dataset.clienteId = cliente.id
         row.innerHTML = `
       <td>
-        <input type="text" value="${cliente.ragione_sociale || ""}" data-field="ragione_sociale">
+        <input type="text" value="${cliente.ragione_sociale || ""}" data-field="ragione_sociale" data-original="${cliente.ragione_sociale || ""}">
       </td>
       <td>
-        <input type="text" value="${cliente.indirizzo || ""}" data-field="indirizzo">
+        <input type="text" value="${cliente.indirizzo || ""}" data-field="indirizzo" data-original="${cliente.indirizzo || ""}">
       </td>
       <td>
-        <input type="email" value="${cliente.email || ""}" data-field="email">
+        <input type="email" value="${cliente.email || ""}" data-field="email" data-original="${cliente.email || ""}">
       </td>
       <td>
-        <input type="number" step="0.1" value="${cliente.ore_acquistate || 0}" data-field="ore_acquistate">
+        <input type="number" step="0.1" value="${cliente.ore_acquistate || 0}" data-field="ore_acquistate" 
+               min="${oreUtilizzate}" title="Minimo: ${oreUtilizzate} ore (ore già utilizzate)" data-original="${cliente.ore_acquistate || 0}">
       </td>
       <td class="text-danger">${oreUtilizzate}</td>
       <td class="text-success">${cliente.ore_residue.toFixed(1)}</td>
@@ -114,21 +183,57 @@ function updateClientiTable(clienti) {
           <button type="button" class="btn btn-success btn-sm" onclick="salvaCliente(${cliente.id}, this)">
             Salva
           </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="annullaModifiche(${cliente.id}, this)">
+            Annulla
+          </button>
           <button type="button" class="btn btn-danger btn-sm" onclick="eliminaCliente(${cliente.id})">
             Elimina
           </button>
-          <a href="/report_cliente/${cliente.id}" target="_blank" class="btn btn-secondary btn-sm">
+          <a href="/report_cliente/${cliente.id}" target="_blank" class="btn btn-primary btn-sm">
             Report
           </a>
         </div>
       </td>
     `
         tbody.appendChild(row)
+
+        // Add change listeners to track modifications
+        const inputs = row.querySelectorAll("input[data-field]")
+        inputs.forEach((input) => {
+            input.addEventListener("input", () => markRowAsModified(cliente.id))
+        })
     })
+}
+
+// Mark row as modified
+function markRowAsModified(clienteId) {
+    const row = document.querySelector(`tr[data-cliente-id="${clienteId}"]`)
+    if (row) {
+        row.classList.add("modified")
+        const saveBtn = row.querySelector(".btn-success")
+        const cancelBtn = row.querySelector(".btn-secondary")
+        if (saveBtn) saveBtn.style.display = "inline-flex"
+        if (cancelBtn) cancelBtn.style.display = "inline-flex"
+    }
+}
+
+// Cancel modifications
+function annullaModifiche(clienteId, button) {
+    const row = button.closest("tr")
+    const inputs = row.querySelectorAll("input[data-field]")
+
+    inputs.forEach((input) => {
+        input.value = input.dataset.original
+    })
+
+    row.classList.remove("modified")
+    showAlert("Modifiche annullate", "success")
 }
 
 // Update client select
 function updateClienteSelect(clienti) {
+    if (!clienteSelect) return
+
     clienteSelect.innerHTML = '<option value="">-- Seleziona Cliente --</option>'
 
     clienti.forEach((cliente) => {
@@ -146,10 +251,18 @@ async function handleClienteSubmit(e) {
 
     const formData = new FormData(formCliente)
 
-    // Debug: log form data
-    console.log("Form data being sent:")
-    for (const [key, value] of formData.entries()) {
-        console.log(key, value)
+    // Basic validation
+    const ragioneSociale = formData.get("ragione_sociale")
+    const oreAcquistate = formData.get("ore_acquistate")
+
+    if (!ragioneSociale || ragioneSociale.trim() === "") {
+        showAlert("Ragione sociale è obbligatoria", "error")
+        return
+    }
+
+    if (!oreAcquistate || isNaN(oreAcquistate) || Number.parseFloat(oreAcquistate) <= 0) {
+        showAlert("Ore acquistate deve essere un numero maggiore di 0", "error")
+        return
     }
 
     try {
@@ -165,11 +278,10 @@ async function handleClienteSubmit(e) {
             formCliente.reset()
             caricaClienti()
         } else {
-            console.error("Server error:", result)
             showAlert(result.error || "Errore nell'aggiunta del cliente", "error")
         }
     } catch (error) {
-        console.error("Network error:", error)
+        console.error("Error adding client:", error)
         showAlert("Errore di connessione", "error")
     }
 }
@@ -180,14 +292,36 @@ async function handleInterventoSubmit(e) {
 
     const formData = new FormData(formIntervento)
     const clienteId = formData.get("cliente_id")
+    const tipoServizio = formData.get("tipo_servizio")
     const oreUtilizzate = Number.parseFloat(formData.get("ore_utilizzate"))
 
-    // Validate hours
+    // Comprehensive validation
+    if (!clienteId) {
+        showAlert("Seleziona un cliente", "error")
+        return
+    }
+
+    if (!tipoServizio || tipoServizio.trim() === "") {
+        showAlert("Tipo servizio è obbligatorio", "error")
+        return
+    }
+
+    if (!oreUtilizzate || oreUtilizzate <= 0) {
+        showAlert("Ore utilizzate deve essere maggiore di 0", "error")
+        return
+    }
+
+    // Validate against available hours
+    if (!validateInterventionHours()) {
+        showAlert("Controlla le ore utilizzate", "error")
+        return
+    }
+
     const selectedOption = clienteSelect.selectedOptions[0]
     const oreResidue = Number.parseFloat(selectedOption.dataset.oreResidue)
 
     if (oreUtilizzate > oreResidue) {
-        showAlert(`Ore insufficienti. Disponibili: ${oreResidue}`, "error")
+        showAlert(`Ore insufficienti. Disponibili: ${oreResidue.toFixed(1)} ore`, "error")
         return
     }
 
@@ -198,8 +332,8 @@ async function handleInterventoSubmit(e) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                cliente_id: clienteId,
-                tipo_servizio: formData.get("tipo_servizio"),
+                cliente_id: Number.parseInt(clienteId),
+                tipo_servizio: tipoServizio.trim(),
                 ore_utilizzate: oreUtilizzate,
             }),
         })
@@ -209,6 +343,7 @@ async function handleInterventoSubmit(e) {
         if (response.ok) {
             showAlert("Intervento registrato con successo", "success")
             formIntervento.reset()
+            oreUtilizzateInput.setCustomValidity("")
             caricaClienti()
         } else {
             showAlert(result.error || "Errore nella registrazione dell'intervento", "error")
@@ -229,6 +364,30 @@ async function salvaCliente(id, button) {
         data[input.dataset.field] = input.value
     })
 
+    // Validation
+    if (!data.ragione_sociale || data.ragione_sociale.trim() === "") {
+        showAlert("Ragione sociale è obbligatoria", "error")
+        return
+    }
+
+    if (!data.ore_acquistate || isNaN(data.ore_acquistate) || Number.parseFloat(data.ore_acquistate) <= 0) {
+        showAlert("Ore acquistate deve essere un numero maggiore di 0", "error")
+        return
+    }
+
+    // Validazione aggiuntiva: controlla il minimo consentito
+    const oreAcquistateInput = row.querySelector('input[data-field="ore_acquistate"]')
+    const minOre = Number.parseFloat(oreAcquistateInput.getAttribute("min"))
+    const oreAcquistate = Number.parseFloat(data.ore_acquistate)
+
+    if (oreAcquistate < minOre) {
+        showAlert(
+            `Non puoi impostare ore acquistate (${oreAcquistate}) inferiori alle ore già utilizzate (${minOre}). Minimo consentito: ${minOre} ore.`,
+            "error",
+        )
+        return
+    }
+
     try {
         const response = await fetch(`/update_cliente/${id}`, {
             method: "POST",
@@ -242,6 +401,13 @@ async function salvaCliente(id, button) {
 
         if (response.ok) {
             showAlert("Cliente aggiornato con successo", "success")
+
+            // Update original values
+            inputs.forEach((input) => {
+                input.dataset.original = input.value
+            })
+
+            row.classList.remove("modified")
             caricaClienti()
         } else {
             showAlert(result.error || "Errore nell'aggiornamento del cliente", "error")
@@ -254,7 +420,11 @@ async function salvaCliente(id, button) {
 
 // Delete client
 function eliminaCliente(id) {
-    showModal("Conferma Eliminazione", "Sei sicuro di voler eliminare questo cliente?", () => deleteCliente(id))
+    showModal(
+        "Conferma Eliminazione",
+        "Sei sicuro di voler eliminare questo cliente? Verranno eliminati anche tutti i suoi interventi.",
+        () => deleteCliente(id),
+    )
 }
 
 // Delete client API call
@@ -310,6 +480,8 @@ async function deleteAllData() {
 
 // Modal functions
 function showModal(title, message, confirmAction) {
+    if (!modal) return
+
     modalTitle.textContent = title
     modalMessage.textContent = message
     currentAction = confirmAction
@@ -317,6 +489,8 @@ function showModal(title, message, confirmAction) {
 }
 
 function hideModal() {
+    if (!modal) return
+
     modal.classList.add("hidden")
     currentAction = null
 }
@@ -330,6 +504,8 @@ function handleModalConfirm() {
 
 // Alert functions
 function showAlert(message, type = "success") {
+    if (!alert) return
+
     alertMessage.textContent = message
     alert.className = `alert alert-${type}`
     alert.classList.remove("hidden")
@@ -341,5 +517,6 @@ function showAlert(message, type = "success") {
 }
 
 function hideAlert() {
+    if (!alert) return
     alert.classList.add("hidden")
 }

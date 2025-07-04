@@ -185,6 +185,28 @@ body {
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
+/* Form validation styles */
+.form-group input:invalid {
+  border-color: var(--danger-color);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.form-group input[data-field="ore_acquistate"]:invalid,
+.form-group input#ore_utilizzate:invalid {
+  border-color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Real-time validation feedback */
+.form-group input:valid {
+  border-color: var(--success-color);
+}
+
+.form-group input:valid:focus {
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -302,6 +324,11 @@ body {
   background-color: var(--gray-50);
 }
 
+.data-table tbody tr.modified {
+  background-color: rgba(59, 130, 246, 0.05);
+  border-left: 4px solid var(--primary-color);
+}
+
 .data-table input {
   width: 100%;
   padding: 0.5rem;
@@ -314,6 +341,26 @@ body {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
+}
+
+.data-table input:invalid {
+  border-color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Tooltip for minimum hours */
+.data-table input[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  background: var(--gray-800);
+  color: var(--white);
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-top: 0.25rem;
+  margin-left: -2rem;
 }
 
 /* Status Indicators */
@@ -342,6 +389,16 @@ body {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+/* Hide cancel button by default */
+.action-buttons .btn-secondary {
+  display: none;
+}
+
+/* Show cancel button when row is modified */
+.data-table tbody tr.modified .action-buttons .btn-secondary {
+  display: inline-flex;
 }
 
 /* Contracts Table */
@@ -473,6 +530,11 @@ body {
 
 .alert-error {
   background-color: var(--danger-color);
+  color: var(--white);
+}
+
+.alert-warning {
+  background-color: var(--warning-color);
   color: var(--white);
 }
 
