@@ -29,67 +29,67 @@ router.get('/report_cliente/:id', (req, res) => {
       `).join('');
 
             let html = `
-        <!DOCTYPE html>
-        <html lang="it">
-        <head>
-          <meta charset="UTF-8">
-          <title>Report Cliente</title>
-          <link rel="stylesheet" href="/CSS/report.css">
-        </head>
-        <body>
+            <!DOCTYPE html>
+            <html lang="it">
+            <head>
+              <meta charset="UTF-8">
+              <title>Report Cliente</title>
+              <link rel="stylesheet" href="/CSS/report.css">
+            </head>
+            <body>
 
-          <a href="/" class="btn btn-secondary" style="margin-bottom: 1rem;">← Torna alla Home</a>
+              <a href="/" class="btn btn-secondary" style="margin-bottom: 1rem;">← Torna alla Home</a>
 
-          <h1>Report Cliente: ${cliente.ragione_sociale}</h1>
+              <h1>Report Cliente: ${cliente.ragione_sociale}</h1>
 
-          <div class="cliente-info">
-            <p><strong>Email:</strong> ${cliente.email}</p>
-            <p><strong>Indirizzo:</strong> ${cliente.indirizzo}</p>
-            <p><strong>Ore acquistate:</strong> ${cliente.ore_acquistate}</p>
-            <p><strong>Ore residue:</strong> ${cliente.ore_residue}</p>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Tipo Servizio</th>
-                <th>Ore Utilizzate</th>
-                <th>Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${righe}
-              <tr>
-                <td><strong>TOTALE</strong></td>
-                <td><strong>${totaleUsato.toFixed(1)}</strong></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <form method="POST" action="/report_cliente/${clienteId}/elimina_tutti_interventi" data-confirm="Confermi l'eliminazione di TUTTI gli interventi di questo cliente?">
-            <button class="btn btn-secondary">Elimina Tutti gli Interventi</button>
-          </form>
-
-          <button class="print" onclick="window.print()">🖨️ Stampa</button>
-
-          <!-- Modale di conferma -->
-          <div id="confirmModal" class="modal hidden">
-            <div class="modal-content">
-              <p id="confirmMessage">Sei sicuro?</p>
-              <div class="modal-actions">
-                <button id="confirmYes" class="btn btn-danger">Sì</button>
-                <button id="confirmNo" class="btn btn-secondary">Annulla</button>
+              <div class="cliente-info">
+                <p><strong>Email:</strong> ${cliente.email}</p>
+                <p><strong>Indirizzo:</strong> ${cliente.indirizzo}</p>
+                <p><strong>Ore acquistate:</strong> ${cliente.ore_acquistate}</p>
+                <p><strong>Ore residue:</strong> ${cliente.ore_residue}</p>
               </div>
-            </div>
-          </div>
 
-          <script src="/JS/report.js">
-          </script>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo Servizio</th>
+                    <th>Ore Utilizzate</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${righe}
+                  <tr>
+                    <td><strong>TOTALE</strong></td>
+                    <td><strong>${totaleUsato.toFixed(1)}</strong></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
 
-        </body>
-        </html>
-      `;
+              <form method="POST" action="/report_cliente/${clienteId}/elimina_tutti_interventi" data-confirm="Confermi l'eliminazione di TUTTI gli interventi di questo cliente?">
+                <button class="btn btn-secondary">Elimina Tutti gli Interventi</button>
+              </form>
+
+              <button class="print" onclick="window.print()">🖨️ Stampa</button>
+
+              <!-- Modale di conferma -->
+              <div id="confirmModal" class="modal hidden">
+                <div class="modal-content">
+                  <p id="confirmMessage">Sei sicuro?</p>
+                  <div class="modal-actions">
+                    <button id="confirmYes" class="btn btn-danger">Sì</button>
+                    <button id="confirmNo" class="btn btn-secondary">Annulla</button>
+                  </div>
+                </div>
+              </div>
+
+              <script src="/JS/report.js">
+              </script>
+
+            </body>
+            </html>
+          `;
 
             res.send(html);
         });
