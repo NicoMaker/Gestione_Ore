@@ -57,6 +57,7 @@ router.get('/report_cliente/:id', (req, res) => {
             <p><strong>Email:</strong> ${cliente.email}</p>
             <p><strong>Indirizzo:</strong> ${cliente.indirizzo}</p>
             <p><strong>Ore acquistate:</strong> ${cliente.ore_acquistate}</p>
+            <p> <strong> Ore utilizzate:</strong> ${cliente.ore_acquistate - cliente.ore_residue}</p>
             <p><strong>Ore residue:</strong> ${cliente.ore_residue}</p>
           </div>
 
