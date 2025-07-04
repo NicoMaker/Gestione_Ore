@@ -139,3 +139,18 @@ tr:nth-child(even) {
     font-weight: bold;
   }
 }
+
+.stato-pallino {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.stato-pallino.verde {
+  background-color: #28a745;
+}
+.stato-pallino.rosso {
+  background-color: #dc3545;
+}

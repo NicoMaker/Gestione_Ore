@@ -7,17 +7,16 @@ async function caricaClienti() {
     select.innerHTML = '<option value="">-- Seleziona Cliente --</option>';
 
     data.forEach(c => {
-        // Popola <select> per interventi
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.ragione_sociale;
         opt.dataset.oreResidue = c.ore_residue;
         select.appendChild(opt);
 
-        // Calcolo ore utilizzate
         const oreUtilizzate = (c.ore_acquistate - c.ore_residue).toFixed(1);
+        const statoColore = c.ore_residue > 0 ? 'green' : 'red';
+        const statoIcona = `<span style="font-size:1.2rem; color:${statoColore};">●</span>`;
 
-        // Popola riga tabella
         const tr = document.createElement('tr');
         tr.innerHTML = `
         <td><input type="text" value="${c.ragione_sociale}"></td>
@@ -26,16 +25,17 @@ async function caricaClienti() {
         <td><input type="number" step="0.1" value="${c.ore_acquistate}"></td>
         <td class="red">${oreUtilizzate}</td>
         <td class="green">${c.ore_residue.toFixed(1)}</td>
+        <td>${statoIcona}</td>
         <td>
-            <button onclick="salvaCliente(${c.id}, this)">Salva</button>
+            <button type="button" onclick="salvaCliente(${c.id}, this)">Salva</button>
             <form onsubmit="return confermaEliminazione()" action="/delete_cliente/${c.id}" method="post" style="display:inline;">
-            <input type="submit" value="Elimina" class="secondary">
+                <input type="submit" value="Elimina" class="secondary">
             </form>
             <a href="/report_cliente/${c.id}" target="_blank" style="text-decoration:none; display:inline-block; margin-top:4px;">
-            <button type="button" class="secondary">Stampa Report</button>
+                <button type="button" class="secondary">Stampa Report</button>
             </a>
         </td>
-    `;
+        `;
         tbody.appendChild(tr);
     });
 }
@@ -57,7 +57,6 @@ function salvaCliente(id, btn) {
         body: new URLSearchParams(dati)
     }).then(() => caricaClienti());
 }
-
 
 document.getElementById('form-cliente').addEventListener('submit', e => {
     e.preventDefault();
@@ -108,5 +107,5 @@ function confermaEliminazioneTotale() {
     }
 }
 
-// Carica tutto all'avvio
+// Avvio iniziale
 caricaClienti();
