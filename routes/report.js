@@ -225,4 +225,11 @@ router.delete("/api/clienti/:id/interventi", (req, res) => {
   })
 })
 
+function mostraModaleModifica(intervento) {
+    document.getElementById("edit-tipo-servizio").value = intervento.tipo_servizio;
+    document.getElementById("edit-ore-utilizzate").value = intervento.ore_utilizzate;
+    document.getElementById("edit-form").dataset.interventoId = intervento.id;
+    document.getElementById("edit-modal").classList.remove("hidden");
+}
+
 module.exports = router

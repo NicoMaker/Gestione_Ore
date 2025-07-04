@@ -196,15 +196,16 @@ function updateInterventionsTable(interventi) {
       <td class="hours-cell">${intervento.ore_utilizzate.toFixed(1)}</td>
       <td class="no-print">
         <div class="action-buttons">
-          <button type="button" class="btn btn-primary btn-sm" onclick="Modifica(${intervento.id})">
-            Modifica
-          </button>
           <button type="button" class="btn btn-danger btn-sm" onclick="deleteIntervento(${intervento.id})">
             Elimina
           </button>
         </div>
       </td>
     `
+
+        //   <button type="button" class="btn btn-primary btn-sm" onclick="Modifica(${intervento.id})">
+        //     Modifica
+        //   </button>
         tbody.appendChild(row)
     })
 
@@ -498,5 +499,31 @@ function showAlert(message, type = "success") {
 function hideAlert() {
     if (alert) {
         alert.classList.add("hidden")
+    }
+}
+
+function updateModalHoursInfo(interventoId, currentHours) {
+    if (!clientData) return;
+
+    const { cliente, interventi } = clientData;
+
+    // Calcola le ore degli altri interventi (ESCLUDI quello attuale)
+    const oreAltri = interventi
+        .filter((i) => i.id !== interventoId)
+        .reduce((acc, i) => acc + i.ore_utilizzate, 0);
+
+    // Il massimo disponibile è:
+    // ore acquistate - ore degli altri + le ore che aveva già questo intervento
+    const maxDisponibili = cliente.ore_acquistate - oreAltri;
+
+    // Mostra nei campi del modal
+    if (modalTotalHours) modalTotalHours.textContent = cliente.ore_acquistate.toFixed(1);
+    if (modalUsedHours) modalUsedHours.textContent = oreAltri.toFixed(1);
+    if (modalMaxHours) modalMaxHours.textContent = maxDisponibili.toFixed(1);
+    if (modalCurrentHours) modalCurrentHours.textContent = currentHours.toFixed(1);
+
+    // Imposta il max nell’input
+    if (editOreUtilizzate) {
+        editOreUtilizzate.max = maxDisponibili;
     }
 }
