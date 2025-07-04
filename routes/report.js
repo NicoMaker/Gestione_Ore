@@ -95,7 +95,7 @@ router.get('/report_cliente/:id', (req, res) => {
             </div>
           </div>
 
-          <script src="/JS/report.js"></script>
+          <script src="/JS/report_Frot.js"></script>
         </body>
         </html>
       `);
