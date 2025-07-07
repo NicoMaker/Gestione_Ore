@@ -155,7 +155,20 @@ function updateClientiTable(clienti) {
 
     clienti.forEach((cliente) => {
         const oreUtilizzate = (cliente.ore_acquistate - cliente.ore_residue).toFixed(1)
-        const statoClass = cliente.ore_residue > 0 ? "status-success" : "status-danger"
+        const percentualeUsata = ((cliente.ore_acquistate - cliente.ore_residue) / cliente.ore_acquistate) * 100
+        let statoClass = ""
+
+        if (cliente.ore_residue <= 0) {
+            statoClass = "status-danger"           // Rosso: ore finite
+        } else if (percentualeUsata <= 70) {
+            statoClass = "status-success"          // Verde: sotto 70%
+        } else if (percentualeUsata <= 85) {
+            statoClass = "status-warning"          // Arancione: 70–84.9%
+        } else if (percentualeUsata <= 99.9) {
+            statoClass = "status-light-danger"     // Rosso chiaro: 85–99.8%
+        } else {
+            statoClass = "status-danger"           // Rosso: praticamente finite
+        }
 
         const row = document.createElement("tr")
         row.dataset.clienteId = cliente.id
@@ -176,8 +189,9 @@ function updateClientiTable(clienti) {
       <td class="text-danger">${oreUtilizzate}</td>
       <td class="text-success">${cliente.ore_residue.toFixed(1)}</td>
       <td>
-        <span class="status-indicator ${statoClass}"></span>
+         <span class="status-indicator ${statoClass}" title="Ore residue: ${cliente.ore_residue.toFixed(1)} ore"></span>
       </td>
+
       <td>
         <div class="action-buttons">
           <button type="button" class="btn btn-success btn-sm" onclick="salvaCliente(${cliente.id}, this)">

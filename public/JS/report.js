@@ -145,10 +145,10 @@ function updateClientInfo(data) {
         const percentuale = (100 * (cliente.ore_acquistate - cliente.ore_residue) / cliente.ore_acquistate)
         const percentualeText = percentuale.toFixed(1) + "%"
 
-        if (percentuale < 60) {
+        if (percentuale <= 70) {
             clientStatus.classList.add("active")
             clientStatus.textContent = `Attivo)`
-        } else if (percentuale < 75) {
+        } else if (percentuale <= 85) {
             clientStatus.classList.add("warning")
             clientStatus.textContent = `Attivo - Attenzione )`
         } else if (percentuale < 100) {
