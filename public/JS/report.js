@@ -145,19 +145,25 @@ function updateClientInfo(data) {
         const percentuale = (100 * (cliente.ore_acquistate - cliente.ore_residue) / cliente.ore_acquistate)
         const percentualeText = percentuale.toFixed(1) + "%"
 
-        if (percentuale <= 70) {
-            clientStatus.classList.add("active")
-            clientStatus.textContent = `Attivo)`
-        } else if (percentuale <= 85) {
-            clientStatus.classList.add("warning")
-            clientStatus.textContent = `Attivo - Attenzione )`
-        } else if (percentuale < 100) {
-            clientStatus.classList.add("danger")
-            clientStatus.textContent = `Attivo - Critico)`
-        } else {
-            clientStatus.classList.add("danger")
-            clientStatus.textContent = `Esaurito)`
+        switch (true) {
+            case (percentuale <= 70):
+                clientStatus.classList.add("active");
+                clientStatus.textContent = "Attivo)";
+                break;
+            case (percentuale <= 85):
+                clientStatus.classList.add("warning");
+                clientStatus.textContent = "Attivo - Attenzione )";
+                break;
+            case (percentuale < 100):
+                clientStatus.classList.add("danger");
+                clientStatus.textContent = "Attivo - Critico)";
+                break;
+            default:
+                clientStatus.classList.add("danger");
+                clientStatus.textContent = "Esaurito)";
+                break;
         }
+
     }
 
 

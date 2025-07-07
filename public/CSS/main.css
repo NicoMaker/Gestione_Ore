@@ -673,53 +673,54 @@ body {
   border: 0;
 }
 
-td{
+td {
   text-align: center !important;
 }
 
 .status-success {
-    background-color: #28a745; /* verde */
+  background-color: #28a745; /* verde */
 }
 
 .status-warning {
-    background-color: #ffc107; /* arancione */
+  background-color: #ffc107; /* arancione */
 }
 
 .status-light-danger {
-    background-color: #f88a8a; /* rosso chiaro */
+  background-color: #f88a8a; /* rosso chiaro */
 }
 
 .status-danger {
-    background-color: #dc3545; /* rosso */
+  background-color: #dc3545; /* rosso */
 }
 
 .status-indicator {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
 }
 .status-indicator {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    vertical-align: middle;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  vertical-align: middle;
+  border: 3px dashed black;
 }
 
 /* Colori */
 .status-success {
-    background-color: green; /* Verde */
+  background-color: green; /* Verde */
 }
 
 .status-warning {
-    background-color: #ffc107; /* Arancione */
+  background-color: #ffc107; /* Arancione */
 }
 
 .status-light-danger {
-    background-color: #f88a8a; /* Rosso chiaro */
+  background-color: #f88a8a; /* Rosso chiaro */
 }
 
 .status-danger {
-    background-color: #dc3545; /* Rosso intenso */
+  background-color: #dc3545; /* Rosso intenso */
 }

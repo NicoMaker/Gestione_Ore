@@ -158,17 +158,21 @@ function updateClientiTable(clienti) {
         const percentualeUsata = ((cliente.ore_acquistate - cliente.ore_residue) / cliente.ore_acquistate) * 100
         let statoClass = ""
 
-        if (cliente.ore_residue <= 0) {
-            statoClass = "status-danger"           // Rosso: ore finite
-        } else if (percentualeUsata <= 70) {
-            statoClass = "status-success"          // Verde: sotto 70%
-        } else if (percentualeUsata <= 85) {
-            statoClass = "status-warning"          // Arancione: 70–84.9%
-        } else if (percentualeUsata <= 99.9) {
-            statoClass = "status-light-danger"     // Rosso chiaro: 85–99.8%
-        } else {
-            statoClass = "status-danger"           // Rosso: praticamente finite
+        switch (true) {
+            case (cliente.ore_residue <= 0):
+                statoClass = "status-danger";
+                break;
+            case (percentualeUsata <= 70):
+                statoClass = "status-success";
+                break;
+            case (percentualeUsata <= 85):
+                statoClass = "status-warning";
+                break;
+            case (percentualeUsata <= 99.9):
+                statoClass = "status-light-danger";
+                break;
         }
+
 
         const row = document.createElement("tr")
         row.dataset.clienteId = cliente.id
@@ -188,6 +192,10 @@ function updateClientiTable(clienti) {
       </td>
       <td class="text-danger">${oreUtilizzate}</td>
       <td class="text-success">${cliente.ore_residue.toFixed(1)}</td>
+
+    <td><p>${percentualeUsata.toFixed(1)}%</p></td>
+
+
       <td>
          <span class="status-indicator ${statoClass}" title="Ore residue: ${cliente.ore_residue.toFixed(1)} ore"></span>
       </td>
@@ -241,7 +249,8 @@ function annullaModifiche(clienteId, button) {
     })
 
     row.classList.remove("modified")
-    showAlert("Modifiche annullate", "success")
+    showAlert("❌ Modifiche annullate", "success");
+
 }
 
 // Update client select
