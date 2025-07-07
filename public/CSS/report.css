@@ -511,7 +511,7 @@
 }
 
 td,
-.hours-cell{
+.hours-cell {
   text-align: center !important;
 }
 
@@ -550,7 +550,7 @@ td,
   .nav-actions {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     background-color: white;
     flex-direction: column;
     align-items: center;
@@ -558,7 +558,7 @@ td,
     width: 100vw;
     height: 100vh;
     gap: 1.5rem;
-    transform: translateX(-100%);
+    transform: translateX(100%);
     transition: transform 0.3s ease;
     z-index: 1000;
   }
@@ -584,6 +584,59 @@ td,
   }
 }
 
-.hamburger{
+.hamburger {
   color: white;
+}
+
+.nav-actions.open {
+  transform: translateX(0);
+}
+
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-actions {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 1.5rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .nav-actions.open {
+    transform: translateX(0);
+  }
+
+  .close-btn {
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .btn {
+    width: 80%;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
 }
