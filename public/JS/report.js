@@ -190,6 +190,10 @@ function updateInterventionsTable(interventi) {
             minute: "2-digit",
         })
 
+        // <button type = "button" class="btn btn-primary btn-sm" onclick = "Modifica(${intervento.id})" >
+        //     Modifica
+        // </button >
+
         const row = document.createElement("tr")
         row.innerHTML = `
             <td class="date-cell">${dataFormatted}</td>
@@ -197,9 +201,6 @@ function updateInterventionsTable(interventi) {
             <td class="hours-cell">${intervento.ore_utilizzate.toFixed(1)}</td>
             <td class="no-print">
                 <div class="action-buttons">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="Modifica(${intervento.id})">
-                        Modifica
-                    </button>
                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteIntervento(${intervento.id})">
                         Elimina
                     </button>
