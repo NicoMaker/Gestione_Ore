@@ -141,17 +141,25 @@ function updateClientInfo(data) {
     // Update status badge
     if (clientStatus) {
         clientStatus.className = "status-badge"
-        if (cliente.ore_residue > 5) {
+
+        const percentuale = (100 * (cliente.ore_acquistate - cliente.ore_residue) / cliente.ore_acquistate)
+        const percentualeText = percentuale.toFixed(1) + "%"
+
+        if (percentuale < 60) {
             clientStatus.classList.add("active")
-            clientStatus.textContent = "Attivo"
-        } else if (cliente.ore_residue > 0) {
+            clientStatus.textContent = `Attivo)`
+        } else if (percentuale < 75) {
             clientStatus.classList.add("warning")
-            clientStatus.textContent = "Attenzione"
+            clientStatus.textContent = `Attivo - Attenzione )`
+        } else if (percentuale < 100) {
+            clientStatus.classList.add("danger")
+            clientStatus.textContent = `Attivo - Critico)`
         } else {
             clientStatus.classList.add("danger")
-            clientStatus.textContent = "Esaurito"
+            clientStatus.textContent = `Esaurito)`
         }
     }
+
 
     // Update progress bar
     if (progressFill) {
