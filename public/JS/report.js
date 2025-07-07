@@ -386,10 +386,17 @@ async function handleEditSubmit(e) {
 
 // Delete intervention
 function deleteIntervento(id) {
-    showConfirmModal("Conferma Eliminazione", "Sei sicuro di voler eliminare questo intervento?", () =>
-        performDeleteIntervento(id),
-    )
+    // Cerca l'intervento corrente tra i dati caricati
+    const intervento = clientData?.interventi?.find((i) => i.id === id);
+    const nomeIntervento = intervento?.tipo_servizio || "intervento sconosciuto";
+
+    showConfirmModal(
+        "Conferma Eliminazione",
+        `Sei sicuro di voler eliminare l'intervento: "${nomeIntervento}"?`,
+        () => performDeleteIntervento(id)
+    );
 }
+
 
 async function performDeleteIntervento(id) {
     try {
