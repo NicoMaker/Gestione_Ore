@@ -443,12 +443,18 @@ async function salvaCliente(id, button) {
 
 // Delete client
 function eliminaCliente(id) {
+    const row = document.querySelector(`tr[data-cliente-id="${id}"]`)
+    const ragioneSociale = row?.querySelector('input[data-field="ragione_sociale"]')?.value?.trim() || "questo cliente"
+
     showModal(
         "Conferma Eliminazione",
-        "Sei sicuro di voler eliminare questo cliente? Verranno eliminati anche tutti i suoi interventi.",
+        `Sei sicuro di voler eliminare il cliente ${ragioneSociale}? Verranno eliminati anche tutti i suoi interventi.`,
         () => deleteCliente(id),
     )
+
 }
+
+
 
 // Delete client API call
 async function deleteCliente(id) {
