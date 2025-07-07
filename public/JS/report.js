@@ -129,6 +129,10 @@ async function loadClientReport() {
 function updateClientInfo(data) {
     const { cliente, totaleUsato, percentualeUtilizzo } = data
 
+
+    // ✅ Aggiorna il titolo della pagina
+    document.title = `Report Cliente ${cliente.ragione_sociale} - Assistenza`;
+
     // Update client details
     if (clientName) clientName.textContent = cliente.ragione_sociale || "Cliente senza nome"
     if (clientEmail) clientEmail.textContent = cliente.email || "-"
