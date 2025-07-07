@@ -288,7 +288,7 @@ async function handleClienteSubmit(e) {
         const result = await response.json()
 
         if (response.ok) {
-            showAlert("Cliente aggiunto con successo", "success")
+            showAlert("✅ Cliente aggiunto con successo", "success")
             formCliente.reset()
             caricaClienti()
         } else {

@@ -132,23 +132,3 @@ router.get("/api/clienti/:id", (req, res) => {
         res.json(row)
     })
 })
-
-// Delete all data
-router.post("/delete_all", (req, res) => {
-    db.serialize(() => {
-        db.run("DELETE FROM interventi", (err) => {
-            if (err) {
-                return res.status(500).json({ error: err.message })
-            }
-
-            db.run("DELETE FROM clienti", (err) => {
-                if (err) {
-                    return res.status(500).json({ error: err.message })
-                }
-                res.json({ success: true, message: "Tutti i dati eliminati" })
-            })
-        })
-    })
-})
-
-module.exports = router
