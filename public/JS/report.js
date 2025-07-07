@@ -198,10 +198,6 @@ function updateInterventionsTable(interventi) {
             minute: "2-digit",
         })
 
-        // <button type = "button" class="btn btn-primary btn-sm" onclick = "Modifica(${intervento.id})" >
-        //     Modifica
-        // </button >
-
         const row = document.createElement("tr")
         row.innerHTML = `
             <td class="date-cell">${dataFormatted}</td>
@@ -209,6 +205,9 @@ function updateInterventionsTable(interventi) {
             <td class="hours-cell">${intervento.ore_utilizzate.toFixed(1)}</td>
             <td class="no-print">
                 <div class="action-buttons">
+                    <button type = "button" class="btn btn-primary btn-sm" onclick = "Modifica(${intervento.id})" >
+                        Modifica
+                    </button >
                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteIntervento(${intervento.id})">
                         Elimina
                     </button>
@@ -238,33 +237,25 @@ function updateModalHoursInfo(interventoId, currentHours) {
 
     const { cliente, interventi } = clientData
 
-    // Calcola ore utilizzate dagli altri interventi (ESCLUDI quello corrente)
     const otherInterventionsTotal = interventi
         .filter((i) => i.id !== interventoId)
         .reduce((acc, i) => acc + i.ore_utilizzate, 0)
 
-    // Ore massime disponibili per questo intervento
     const maxAvailableHours = cliente.ore_acquistate - otherInterventionsTotal
 
-    console.log("Calcolo ore:", {
-        interventoId,
-        currentHours,
-        otherInterventionsTotal,
-        maxAvailableHours,
-        ore_acquistate: cliente.ore_acquistate
-    })
-
-    // Aggiorna i valori nel modal
+    // Se gli elementi DOM non esistono, li saltiamo
     if (modalTotalHours) modalTotalHours.textContent = cliente.ore_acquistate.toFixed(1)
     if (modalUsedHours) modalUsedHours.textContent = otherInterventionsTotal.toFixed(1)
     if (modalMaxHours) modalMaxHours.textContent = maxAvailableHours.toFixed(1)
     if (modalCurrentHours) modalCurrentHours.textContent = currentHours.toFixed(1)
 
-    // Imposta il massimo nell'input
+    // Aggiungiamo questa riga per compatibilità:
     if (editOreUtilizzate) {
         editOreUtilizzate.max = maxAvailableHours
+        editOreUtilizzate.dataset.maxHours = maxAvailableHours // 👈 usato per validazione
     }
 }
+
 
 // Validate hours input in real-time
 function validateHoursInput() {
@@ -300,7 +291,9 @@ function validateHoursInput() {
         messageClass = "warning"
         editOreUtilizzate.classList.add("input-warning")
     } else {
-        message = `✓ Ore valide (${(maxHours - inputValue).toFixed(1)} ore rimarranno disponibili)`
+
+
+
         messageClass = "success"
         editOreUtilizzate.classList.add("input-success")
     }
@@ -318,6 +311,7 @@ function validateHoursInput() {
 async function handleEditSubmit(e) {
     e.preventDefault()
 
+    // Recupera ID intervento da variabile o dataset
     if (!currentEditingId) {
         const idFromDom = editForm?.dataset?.interventoId
         if (idFromDom) {
@@ -328,10 +322,13 @@ async function handleEditSubmit(e) {
         }
     }
 
-    const tipoServizio = editTipoServizio.value.trim()
-    let oreUtilizzate = editOreUtilizzate.value.trim().replace(",", ".")
+    // Raccoglie i dati dal form
+    const tipoServizio = editTipoServizio?.value.trim() || ""
+    let oreUtilizzate = editOreUtilizzate?.value.trim().replace(",", ".") || "0"
     oreUtilizzate = Number.parseFloat(oreUtilizzate)
-    const maxHours = Number.parseFloat(modalMaxHours.textContent) || 0
+
+    // Recupera il massimo consentito (impostato in updateModalHoursInfo)
+    const maxHours = Number.parseFloat(editOreUtilizzate?.dataset?.maxHours || "0")
     const originalHours = currentInterventoData?.ore_utilizzate || 0
     const allowedMax = maxHours + originalHours
 
@@ -351,6 +348,7 @@ async function handleEditSubmit(e) {
         return
     }
 
+    // Invia la richiesta al backend
     try {
         const response = await fetch(`/api/interventi/${currentEditingId}`, {
             method: "PUT",
@@ -377,6 +375,7 @@ async function handleEditSubmit(e) {
         showAlert("Errore di connessione", "error")
     }
 }
+
 
 
 // Delete intervention
@@ -449,19 +448,38 @@ function hideEditModal() {
     if (editModal) {
         editModal.classList.add("hidden")
     }
+
+    // Reset variabili globali
     currentEditingId = null
     currentInterventoData = null
 
-    // Clean up validation messages
-    const validationMsgs = editModal.querySelectorAll(".validation-message")
-    validationMsgs.forEach((msg) => msg.remove())
+    // Pulisce messaggi di validazione
+    const validationMsgs = editForm?.querySelectorAll(".validation-message")
+    validationMsgs?.forEach((msg) => msg.remove())
 
-    if (editOreUtilizzate) {
-        editOreUtilizzate.classList.remove("input-error", "input-warning", "input-success")
+    // Reset input tipo servizio
+    if (editTipoServizio) {
+        editTipoServizio.value = ""
     }
 
-    if (saveBtn) saveBtn.disabled = false
+    // Reset input ore utilizzate
+    if (editOreUtilizzate) {
+        editOreUtilizzate.value = ""
+        editOreUtilizzate.classList.remove("input-error", "input-warning", "input-success")
+        editOreUtilizzate.removeAttribute("data-max-hours") // ← molto importante
+    }
+
+    // Reimposta bottone Salva
+    if (saveBtn) {
+        saveBtn.disabled = false
+    }
+
+    // Rimuove anche eventuale ID dal dataset
+    if (editForm && editForm.dataset.interventoId) {
+        delete editForm.dataset.interventoId
+    }
 }
+
 
 function showConfirmModal(title, message, confirmAction) {
     if (!confirmModal) return
@@ -538,69 +556,8 @@ async function Modifica(interventoId) {
     }
 }
 
-async function handleEditSubmit(e) {
-    e.preventDefault()
-
-    // 🔁 Recupera ID se mancante
-    if (!currentEditingId) {
-        const idFromDom = editForm?.dataset?.interventoId
-        if (idFromDom) {
-            currentEditingId = parseInt(idFromDom)
-            console.log("↪️ ID recuperato dal DOM:", currentEditingId)
-        } else {
-            showAlert("Errore: ID intervento non trovato", "error")
-            return
-        }
-    }
-
-    console.log("✅ Salvataggio intervento ID:", currentEditingId)
-
-    const tipoServizio = editTipoServizio.value.trim()
-    let oreUtilizzate = editOreUtilizzate.value.trim().replace(",", ".")
-    oreUtilizzate = Number.parseFloat(oreUtilizzate)
-    const maxHours = Number.parseFloat(modalMaxHours.textContent) || 0
-
-
-    // Validazioni
-    if (!tipoServizio) {
-        showAlert("Il tipo servizio è obbligatorio", "error")
-        return
-    }
-
-    if (!oreUtilizzate || oreUtilizzate <= 0) {
-        showAlert("Le ore devono essere maggiori di 0", "error")
-        return
-    }
-
-    if (oreUtilizzate > maxHours) {
-        showAlert(`Ore eccedenti! Massimo disponibile: ${maxHours.toFixed(1)} ore`, "error")
-        return
-    }
-
-    try {
-        const response = await fetch(`/api/interventi/${currentEditingId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                tipo_servizio: tipoServizio,
-                ore_utilizzate: oreUtilizzate,
-            }),
-        })
-
-        const result = await response.json()
-        console.log("📦 Risposta server:", result)
-
-        if (response.ok && result.success) {
-            showAlert("✅ Intervento aggiornato con successo!", "success")
-            hideEditModal()
-            loadClientReport()
-        } else {
-            showAlert(result.error || "Errore nel salvataggio", "error")
-        }
-    } catch (error) {
-        console.error("Errore di rete:", error)
-        showAlert("Errore di connessione", "error")
+function showEditModal() {
+    if (editModal) {
+        editModal.classList.remove("hidden")
     }
 }
