@@ -13,18 +13,27 @@
 </head>
 
 <body>
-    <!-- Navigation -->
+
+    <!-- Navbar -->
     <nav class="navbar no-print">
         <div class="nav-container">
             <div class="nav-brand">
-                <h2>Assistenza</h2>
+                <h2 id="client-name-navbar">Assistenza</h2>
             </div>
-            <div class="nav-actions">
+
+            <!-- Hamburger (solo mobile) -->
+            <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+
+            <!-- Navigation Menu -->
+            <div class="nav-actions" id="nav-actions">
+                <!-- Questi sono SEMPRE visibili su desktop, e visibili su mobile SOLO quando hamburger è aperto -->
+                <button class="close-btn" onclick="toggleMobileMenu()">✕</button>
                 <a href="/" class="btn btn-secondary">← Torna alla Home</a>
                 <button onclick="window.print()" class="btn btn-primary">🖨️ Stampa Report</button>
             </div>
         </div>
     </nav>
+
 
     <!-- Main Content -->
     <main class="main-content">
@@ -166,6 +175,7 @@
     </div>
 
     <script src="/js/report.js"></script>
+    <script src="/js/mobile-menu.js"></script>
 </body>
 
 </html>

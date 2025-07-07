@@ -514,3 +514,76 @@ td,
 .hours-cell{
   text-align: center !important;
 }
+
+/* HAMBURGER solo mobile */
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* NAVIGATION MENU STILI COMUNI */
+.nav-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* CLOSE BUTTON (solo mobile) */
+.close-btn {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+/* MOBILE STYLE */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-actions {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 1.5rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .nav-actions.open {
+    transform: translateX(0);
+  }
+
+  .close-btn {
+    display: block;
+    align-self: flex-end;
+    margin: 1rem 2rem 0 0;
+  }
+
+  .btn {
+    width: 80%;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+}
+
+.hamburger{
+  color: white;
+}
