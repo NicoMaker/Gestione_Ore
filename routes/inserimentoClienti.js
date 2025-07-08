@@ -9,13 +9,12 @@ const gruppi = [
     { nome: "0–70%", range: [0.0, 0.70], status: "status-success" },
 ];
 
-function randomOreAcquistate() {
-    return Math.floor(Math.random() * 21) + 10; // tra 10 e 30
-}
+const randomOreAcquistate = () =>
+    Math.floor(Math.random() * 100) + 1; 
 
-function randomPercentuale(min, max) {
-    return +(Math.random() * (max - min) + min).toFixed(3);
-}
+const randomPercentuale = (min, max) =>
+    +(Math.random() * (max - min) + min).toFixed(3);
+
 
 function generaInterventi(totaleOre) {
     const interventi = [];

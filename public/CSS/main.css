@@ -724,3 +724,8 @@ td {
 .status-danger {
   background-color: #dc3545; /* Rosso intenso */
 }
+
+td,
+th {
+  text-align: center !important;
+}

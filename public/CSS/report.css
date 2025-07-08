@@ -592,7 +592,6 @@ td,
   transform: translateX(0);
 }
 
-
 @media (max-width: 768px) {
   .hamburger {
     display: block;
@@ -639,4 +638,9 @@ td,
   body.menu-open {
     overflow: hidden;
   }
+}
+
+td,
+th {
+  text-align: center !important;
 }
