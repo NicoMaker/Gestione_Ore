@@ -24,7 +24,7 @@ function generaInterventi(totaleOre) {
     while (oreRimanenti > 0) {
         const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
         interventi.push({
-            tipo_servizio: `Servizio ${interventi.length + 1}`,
+            tipo_servizio: `Intervento ${interventi.length + 1}`,
             ore_utilizzate: ore,
             data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`,
         });
@@ -35,9 +35,9 @@ function generaInterventi(totaleOre) {
 
 db.serialize(() => {
     const insertCliente = db.prepare(`
-    INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
-    VALUES (?, ?, ?, ?, ?)
-  `);
+        INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
+        VALUES (?, ?, ?, ?, ?)
+    `);
 
     const clientiInseriti = [];
 
@@ -67,8 +67,10 @@ db.serialize(() => {
 
     const insertNext = () => {
         if (completed >= clientiInseriti.length) {
-            console.log("✅ Tutti i clienti e interventi colorati inseriti.");
-            db.close();
+            insertCliente.finalize(() => {
+                console.log("✅ Tutti i clienti e interventi inseriti.");
+                db.close();
+            });
             return;
         }
 
@@ -89,20 +91,26 @@ db.serialize(() => {
                 }
 
                 const insertIntervento = db.prepare(`
-          INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
-          VALUES (?, ?, ?, ?)
-        `);
+                    INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
+                    VALUES (?, ?, ?, ?)
+                `);
 
                 let done = 0;
                 cliente.interventi.forEach((int) => {
-                    insertIntervento.run(clienteId, int.tipo_servizio, int.ore_utilizzate, int.data, () => {
-                        done++;
-                        if (done === cliente.interventi.length) {
-                            insertIntervento.finalize();
-                            completed++;
-                            insertNext();
+                    insertIntervento.run(
+                        clienteId,
+                        int.tipo_servizio,
+                        int.ore_utilizzate,
+                        int.data,
+                        () => {
+                            done++;
+                            if (done === cliente.interventi.length) {
+                                insertIntervento.finalize();
+                                completed++;
+                                insertNext();
+                            }
                         }
-                    });
+                    );
                 });
             }
         );
