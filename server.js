@@ -14,8 +14,8 @@ const upload = multer()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(upload.none()) // For parsing multipart/form-data without files
-app.use("/css", express.static(path.join(__dirname, "public/css")))
-app.use("/js", express.static(path.join(__dirname, "public/js")))
+app.use("/css", express.static(path.join(__dirname, "public/CSS")))
+app.use("/js", express.static(path.join(__dirname, "public/JS")))
 app.use("/assets", express.static(path.join(__dirname, "public/assets")))
 
 // Routes

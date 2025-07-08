@@ -124,6 +124,11 @@ async function caricaClienti() {
         const result = await response.json()
 
         if (response.ok) {
+            // ORDINA ALFABETICAMENTE
+            result.sort((a, b) =>
+                (a.ragione_sociale || "").localeCompare(b.ragione_sociale || "")
+            )
+
             updateClientiTable(result)
             updateClienteSelect(result)
         } else {
@@ -134,6 +139,7 @@ async function caricaClienti() {
         showAlert("Errore di connessione", "error")
     }
 }
+
 
 // Update clients table
 function updateClientiTable(clienti) {
