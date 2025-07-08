@@ -644,3 +644,7 @@ td,
 th {
   text-align: center !important;
 }
+
+.nav-brand a {
+  text-decoration: none; /* Rimuove underline in stato normale */
+}
