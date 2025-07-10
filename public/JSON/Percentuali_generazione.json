@@ -1,0 +1,25 @@
+{
+  "numero_clienti_totali": 100,
+  "gruppi": [
+    {
+      "nome": "100%",
+      "range": [1.0, 1.0],
+      "status": "status-danger"
+    },
+    {
+      "nome": "86–99%",
+      "range": [0.86, 0.999],
+      "status": "status-light-danger"
+    },
+    {
+      "nome": "71–85%",
+      "range": [0.71, 0.85],
+      "status": "status-warning"
+    },
+    {
+      "nome": "0–70%",
+      "range": [0.0, 0.7],
+      "status": "status-success"
+    }
+  ]
+}

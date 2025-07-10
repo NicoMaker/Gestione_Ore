@@ -1,48 +1,25 @@
-const db = require("../db"); // adatta se necessario
-
-const NUM_CLIENTI = 100;
-
-const gruppi = [
-    { nome: "100%", range: [1.0, 1.0], status: "status-danger" },
-    { nome: "86–99%", range: [0.86, 0.999], status: "status-light-danger" },
-    { nome: "71–85%", range: [0.71, 0.85], status: "status-warning" },
-    { nome: "0–70%", range: [0.0, 0.70], status: "status-success" },
-];
-
-const randomOreAcquistate = () =>
-    Math.floor(Math.random() * 100) + 1; 
-
-const randomPercentuale = (min, max) =>
-    +(Math.random() * (max - min) + min).toFixed(3);
+const db = require("../db");
+const fs = require("fs");
+const path = require("path");
 
 
-function generaInterventi(totaleOre) {
-    const interventi = [];
-    let oreRimanenti = totaleOre;
-    let giorno = 1;
-    while (oreRimanenti > 0) {
-        const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
-        interventi.push({
-            tipo_servizio: `Intervento ${interventi.length + 1}`,
-            ore_utilizzate: ore,
-            data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`,
-        });
-        oreRimanenti -= ore;
-    }
-    return interventi;
-}
+// ✅ Carica dati da JSON unico
+const data = JSON.parse(fs.readFileSync(path.join(__dirname, "../public/JSON/Percentuali_generazione.json"), "utf8"));
+const gruppi = data.gruppi;
+const NUM_CLIENTI = data.numero_clienti_totali;
+const CLIENTI_PER_GRUPPO = Math.floor(NUM_CLIENTI / gruppi.length);
 
 db.serialize(() => {
     const insertCliente = db.prepare(`
-        INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
-        VALUES (?, ?, ?, ?, ?)
-    `);
+    INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
+    VALUES (?, ?, ?, ?, ?)
+  `);
 
     const clientiInseriti = [];
 
     gruppi.forEach((gruppo, gIndex) => {
-        for (let i = 0; i < NUM_CLIENTI / gruppi.length; i++) {
-            const n = gIndex * (NUM_CLIENTI / gruppi.length) + i + 1;
+        for (let i = 0; i < CLIENTI_PER_GRUPPO; i++) {
+            const n = gIndex * CLIENTI_PER_GRUPPO + i + 1;
             const oreAcquistate = randomOreAcquistate();
             const percentuale = randomPercentuale(gruppo.range[0], gruppo.range[1]);
             const oreUsate = +(oreAcquistate * percentuale).toFixed(1);
@@ -56,8 +33,7 @@ db.serialize(() => {
                 ore_acquistate: oreAcquistate,
                 ore_residue: oreResidue,
                 interventi,
-                status: gruppo.status,
-                percentuale: percentuale,
+                status: gruppo.status
             });
         }
     });
@@ -90,9 +66,9 @@ db.serialize(() => {
                 }
 
                 const insertIntervento = db.prepare(`
-                    INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
-                    VALUES (?, ?, ?, ?)
-                `);
+          INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
+          VALUES (?, ?, ?, ?)
+        `);
 
                 let done = 0;
                 cliente.interventi.forEach((int) => {
@@ -117,3 +93,34 @@ db.serialize(() => {
 
     insertNext();
 });
+
+
+const randomOreAcquistate = () =>
+    Math.floor(Math.random() * 100) + 1;
+
+const randomPercentuale = (min, max)
+    + (Math.random() * (max - min) + min).toFixed(3);
+
+function generaInterventi(totaleOre) {
+    const interventi = [];
+    let oreRimanenti = totaleOre;
+    let giorno = 1;
+
+    while (oreRimanenti > 0) {
+        const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
+        interventi.push({
+            tipo_servizio: `Intervento ${interventi.length + 1}`,
+            ore_utilizzate: ore,
+            data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`
+        });
+        oreRimanenti -= ore;
+    }
+
+    return interventi;
+}
+
+module.exports = {
+    randomOreAcquistate,
+    randomPercentuale,
+    generaInterventi
+};
