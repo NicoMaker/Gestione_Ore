@@ -2,6 +2,31 @@ const db = require("../db");
 const fs = require("fs");
 const path = require("path");
 
+// ✅ FUNZIONI UTILI
+const randomOreAcquistate = () =>
+    Math.floor(Math.random() * 100) + 1;
+
+function randomPercentuale(min, max) {
+    return +(Math.random() * (max - min) + min).toFixed(3);
+}
+
+function generaInterventi(totaleOre) {
+    const interventi = [];
+    let oreRimanenti = totaleOre;
+    let giorno = 1;
+
+    while (oreRimanenti > 0) {
+        const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
+        interventi.push({
+            tipo_servizio: `Intervento ${interventi.length + 1}`,
+            ore_utilizzate: ore,
+            data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`
+        });
+        oreRimanenti -= ore;
+    }
+
+    return interventi;
+}
 
 // ✅ Carica dati da JSON unico
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, "../public/JSON/Percentuali_generazione.json"), "utf8"));
@@ -93,31 +118,6 @@ db.serialize(() => {
 
     insertNext();
 });
-
-
-const randomOreAcquistate = () =>
-    Math.floor(Math.random() * 100) + 1;
-
-const randomPercentuale = (min, max)
-    + (Math.random() * (max - min) + min).toFixed(3);
-
-function generaInterventi(totaleOre) {
-    const interventi = [];
-    let oreRimanenti = totaleOre;
-    let giorno = 1;
-
-    while (oreRimanenti > 0) {
-        const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
-        interventi.push({
-            tipo_servizio: `Intervento ${interventi.length + 1}`,
-            ore_utilizzate: ore,
-            data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`
-        });
-        oreRimanenti -= ore;
-    }
-
-    return interventi;
-}
 
 module.exports = {
     randomOreAcquistate,
