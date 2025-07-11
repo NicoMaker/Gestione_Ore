@@ -9,9 +9,9 @@ const USER_ID_CREAZIONE = parseInt(process.argv[2] || "1");
 const randomOreAcquistate = () =>
     Math.floor(Math.random() * 100) + 1;
 
-function randomPercentuale(min, max) {
-    return +(Math.random() * (max - min) + min).toFixed(3);
-}
+const randomPercentuale = (min, max) =>
+    +(Math.random() * (max - min) + min).toFixed(3);
+
 
 function generaInterventi(totaleOre) {
     const interventi = [];
