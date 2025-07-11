@@ -2,6 +2,9 @@ const db = require("../db");
 const fs = require("fs");
 const path = require("path");
 
+// ✅ Costante: numero utente che ha creato i dati (solo console.log, non va nel DB)
+const USER_ID_CREAZIONE = parseInt(process.argv[2] || "1");
+
 // ✅ FUNZIONI UTILI
 const randomOreAcquistate = () =>
     Math.floor(Math.random() * 100) + 1;
@@ -18,7 +21,7 @@ function generaInterventi(totaleOre) {
     while (oreRimanenti > 0) {
         const ore = Math.min(oreRimanenti, Math.floor(Math.random() * 5) + 1);
         interventi.push({
-            tipo_servizio: `Intervento ${interventi.length + 1}`,
+            tipo_servizio: `Intervento numero ${interventi.length + 1}`,
             ore_utilizzate: ore,
             data: `2025-07-${String(giorno++).padStart(2, "0")} 10:00:00`
         });
@@ -36,9 +39,9 @@ const CLIENTI_PER_GRUPPO = Math.floor(NUM_CLIENTI / gruppi.length);
 
 db.serialize(() => {
     const insertCliente = db.prepare(`
-    INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
-    VALUES (?, ?, ?, ?, ?)
-  `);
+        INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
+        VALUES (?, ?, ?, ?, ?)
+    `);
 
     const clientiInseriti = [];
 
@@ -68,7 +71,7 @@ db.serialize(() => {
     const insertNext = () => {
         if (completed >= clientiInseriti.length) {
             insertCliente.finalize(() => {
-                console.log("✅ Tutti i clienti e interventi inseriti.");
+                console.log(`\n✅ Tutti i clienti e interventi inseriti da utente numero: ${USER_ID_CREAZIONE}`);
                 db.close();
             });
             return;
@@ -84,6 +87,8 @@ db.serialize(() => {
             function () {
                 const clienteId = this.lastID;
 
+                console.log(`➕ ${cliente.ragione_sociale} (${cliente.email}) Creato`);
+
                 if (cliente.interventi.length === 0) {
                     completed++;
                     insertNext();
@@ -91,9 +96,9 @@ db.serialize(() => {
                 }
 
                 const insertIntervento = db.prepare(`
-          INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
-          VALUES (?, ?, ?, ?)
-        `);
+                    INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
+                    VALUES (?, ?, ?, ?)
+                `);
 
                 let done = 0;
                 cliente.interventi.forEach((int) => {
