@@ -77,7 +77,7 @@ db.serialize(() => {
     const insertNext = () => {
         if (completed >= clientiInseriti.length) {
             insertCliente.finalize(() => {
-                console.log(`\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti da utente numero: ${USER_ID_CREAZIONE}`);
+                console.log(`\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti`);
                 db.close();
             });
             return;
@@ -101,7 +101,7 @@ db.serialize(() => {
                 console.log(`      🔄 Ore residue: ${cliente.ore_residue}`);
 
                 if (cliente.interventi.length > 0) {
-                    console.log(`      📋 Interventi creati per questo cliente dall'utente con ID ${USER_ID_CREAZIONE}:`);
+                    console.log(`      📋 Interventi creati per questo cliente:`);
                     cliente.interventi.forEach((int, idx) => {
                         console.log(`         #${idx + 1}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`);
                     });
