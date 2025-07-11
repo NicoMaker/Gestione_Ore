@@ -1,10 +1,22 @@
+const fs = require("fs")
+const path = require("path")
 const sqlite3 = require("sqlite3").verbose()
-const db = new sqlite3.Database("./gestione_ore.db")
+
+// Assicurati che la cartella "db" esista
+const dbDir = path.join(__dirname, "db")
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir)
+}
+
+// Percorso completo del database
+const dbPath = path.join(dbDir, "gestione_ore.db")
+
+const db = new sqlite3.Database(dbPath)
 
 // Create tables if they don't exist
 db.serialize(() => {
-  // Clients table
-  db.run(`
+    // Clients table
+    db.run(`
         CREATE TABLE IF NOT EXISTS clienti (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ragione_sociale TEXT NOT NULL,
@@ -15,8 +27,8 @@ db.serialize(() => {
         )
     `)
 
-  // Interventions table
-  db.run(`
+    // Interventions table
+    db.run(`
         CREATE TABLE IF NOT EXISTS interventi (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cliente_id INTEGER NOT NULL,
