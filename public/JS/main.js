@@ -22,6 +22,16 @@ const alertClose = document.getElementById("alert-close")
 const hamburger = document.querySelector(".hamburger")
 const navMenu = document.querySelector(".nav-menu")
 
+// --- Ricerca Clienti nella select ---
+const searchClientiInput = document.getElementById('search-clienti');
+const dipendentiSearchGroup = document.getElementById('dipendenti-search-group');
+const searchDipendentiInput = document.getElementById('search-dipendenti');
+const listaDipendenti = document.getElementById('lista-dipendenti');
+const searchListaClientiInput = document.getElementById('search-lista-clienti');
+
+let clientiList = [];
+let dipendentiList = [];
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     caricaClienti()
@@ -263,6 +273,7 @@ function annullaModifiche(clienteId, button) {
 
 // Update client select
 function updateClienteSelect(clienti) {
+    clientiList = clienti;
     if (!clienteSelect) return
 
     clienteSelect.innerHTML = '<option value="">-- Seleziona Cliente --</option>'
@@ -556,4 +567,179 @@ function showAlert(message, type = "success") {
 function hideAlert() {
     if (!alert) return
     alert.classList.add("hidden")
+}
+
+// Ricerca clienti nella select classica (sempre visibile)
+if (searchClientiInput && clienteSelect) {
+    searchClientiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        clienteSelect.innerHTML = '<option value="">-- Seleziona Cliente --</option>';
+        let filtered = clientiList;
+        if (value) {
+            filtered = clientiList.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
+        }
+        filtered.forEach((cliente) => {
+            const option = document.createElement("option");
+            option.value = cliente.id;
+            option.textContent = `${cliente.ragione_sociale || "Cliente senza nome"} (${cliente.ore_residue.toFixed(1)} ore)`;
+            option.dataset.oreResidue = cliente.ore_residue;
+            clienteSelect.appendChild(option);
+        });
+    });
+}
+
+// Ricerca nella lista clienti (sopra tabella)
+if (searchListaClientiInput) {
+    searchListaClientiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        if (!value) {
+            updateClientiTable(clientiList);
+            return;
+        }
+        const filtered = clientiList.filter(c => {
+            return (
+                (c.ragione_sociale || '').toLowerCase().includes(value) ||
+                (c.indirizzo || '').toLowerCase().includes(value) ||
+                (c.email || '').toLowerCase().includes(value)
+            );
+        });
+        updateClientiTable(filtered);
+    });
+}
+
+const comboClientiInput = document.getElementById('combo-clienti');
+const dropdownClienti = document.getElementById('dropdown-clienti');
+const comboDipendentiInput = document.getElementById('combo-dipendenti');
+const dropdownDipendenti = document.getElementById('dropdown-dipendenti');
+let selectedClienteId = null;
+let selectedDipendente = null;
+
+// Combo filtrabile clienti
+if (comboClientiInput && dropdownClienti) {
+    comboClientiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        dropdownClienti.innerHTML = '';
+        selectedClienteId = null;
+        if (!value) {
+            dropdownClienti.style.display = 'none';
+            return;
+        }
+        const filtered = clientiList.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
+        if (filtered.length === 0) {
+            dropdownClienti.innerHTML = '<li class="dropdown-empty">Nessun cliente trovato</li>';
+        } else {
+            filtered.forEach(c => {
+                const li = document.createElement('li');
+                li.textContent = `${c.ragione_sociale} (${c.ore_residue.toFixed(1)} ore)`;
+                li.className = 'dropdown-item';
+                li.addEventListener('mousedown', function (e) {
+                    comboClientiInput.value = c.ragione_sociale;
+                    selectedClienteId = c.id;
+                    dropdownClienti.style.display = 'none';
+                    // Mostra ricerca dipendenti
+                    dipendentiSearchGroup.style.display = '';
+                });
+                dropdownClienti.appendChild(li);
+            });
+        }
+        dropdownClienti.style.display = 'block';
+    });
+    comboClientiInput.addEventListener('blur', function () {
+        setTimeout(() => { dropdownClienti.style.display = 'none'; }, 120);
+    });
+}
+
+// Combo filtrabile dipendenti (mock)
+if (comboDipendentiInput && dropdownDipendenti) {
+    comboDipendentiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        dropdownDipendenti.innerHTML = '';
+        selectedDipendente = null;
+        if (!value) {
+            dropdownDipendenti.style.display = 'none';
+            return;
+        }
+        // Mock dipendenti
+        dipendentiList = [
+            { nome: 'Mario Rossi' },
+            { nome: 'Luca Bianchi' },
+            { nome: 'Giulia Verdi' },
+            { nome: 'Anna Neri' }
+        ];
+        const filtered = dipendentiList.filter(d => d.nome.toLowerCase().includes(value));
+        if (filtered.length === 0) {
+            dropdownDipendenti.innerHTML = '<li class="dropdown-empty">Nessun dipendente trovato</li>';
+        } else {
+            filtered.forEach(d => {
+                const li = document.createElement('li');
+                li.textContent = d.nome;
+                li.className = 'dropdown-item';
+                li.addEventListener('mousedown', function (e) {
+                    comboDipendentiInput.value = d.nome;
+                    selectedDipendente = d.nome;
+                    dropdownDipendenti.style.display = 'none';
+                });
+                dropdownDipendenti.appendChild(li);
+            });
+        }
+        dropdownDipendenti.style.display = 'block';
+    });
+    comboDipendentiInput.addEventListener('blur', function () {
+        setTimeout(() => { dropdownDipendenti.style.display = 'none'; }, 120);
+    });
+}
+
+// Combo custom clienti
+const comboBox = document.getElementById('combo-clienti-box');
+const comboInput = document.getElementById('combo-clienti-input');
+const comboDropdown = document.getElementById('combo-clienti-dropdown');
+const comboSearch = document.getElementById('combo-clienti-search');
+const comboList = document.getElementById('combo-clienti-list');
+let comboSelectedId = null;
+
+if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
+    // Apri/chiudi dropdown
+    comboInput.addEventListener('click', function (e) {
+        comboDropdown.style.display = 'block';
+        comboSearch.value = '';
+        renderComboList(clientiList);
+        comboSearch.focus();
+    });
+    // Chiudi dropdown se clicchi fuori
+    document.addEventListener('click', function (e) {
+        if (!comboBox.contains(e.target)) {
+            comboDropdown.style.display = 'none';
+        }
+    });
+    // Ricerca live
+    comboSearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        let filtered = clientiList;
+        if (value) {
+            filtered = clientiList.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
+        }
+        renderComboList(filtered);
+    });
+    function renderComboList(list) {
+        comboList.innerHTML = '';
+        if (list.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'Nessun cliente trovato';
+            li.className = 'combo-dropdown-empty';
+            comboList.appendChild(li);
+            return;
+        }
+        list.forEach(c => {
+            const li = document.createElement('li');
+            li.textContent = `${c.ragione_sociale || 'Cliente senza nome'} (${c.ore_residue.toFixed(1)} ore)`;
+            li.className = 'combo-dropdown-item';
+            li.tabIndex = 0;
+            li.addEventListener('mousedown', function (e) {
+                comboInput.value = c.ragione_sociale;
+                comboSelectedId = c.id;
+                comboDropdown.style.display = 'none';
+            });
+            comboList.appendChild(li);
+        });
+    }
 }

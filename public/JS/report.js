@@ -17,6 +17,10 @@ const clientUsagePercentage = document.getElementById("client-usage-percentage")
 const progressFill = document.getElementById("progress-fill")
 const totalInterventions = document.getElementById("total-interventions")
 const tabellaInterventi = document.getElementById("tabella-interventi")
+const searchInterventiInput = document.getElementById('search-interventi');
+const searchInterventoCombo = document.getElementById('search-intervento-combo');
+const comboInterventi = document.getElementById('combo-interventi');
+let interventiList = [];
 
 // Modals
 const editModal = document.getElementById("edit-modal")
@@ -179,6 +183,7 @@ function updateClientInfo(data) {
 
 // Update interventions table
 function updateInterventionsTable(interventi) {
+    interventiList = interventi;
     if (!tabellaInterventi) return
 
     const tbody = tabellaInterventi.querySelector("tbody")
@@ -239,6 +244,33 @@ function updateInterventionsTable(interventi) {
         <td class="no-print"></td>
     `
     tbody.appendChild(totalRow)
+}
+
+// Aggiorna la select combo-interventi con tutti gli interventi
+function updateComboInterventi(interventi) {
+    if (!comboInterventi) return;
+    comboInterventi.innerHTML = '<option value="">-- Tutti gli interventi --</option>';
+    interventi.forEach(i => {
+        const option = document.createElement('option');
+        option.value = i.id;
+        option.textContent = `${i.tipo_servizio || '-'} (${new Date(i.data_intervento).toLocaleDateString('it-IT')})`;
+        comboInterventi.appendChild(option);
+    });
+}
+
+// Ricerca interventi per nome
+if (searchInterventiInput) {
+    searchInterventiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        // Usa sempre la lista completa come base
+        if (!value) {
+            updateInterventionsTable(clientData ? clientData.interventi : []);
+            return;
+        }
+        const baseList = clientData ? clientData.interventi : [];
+        const filtered = baseList.filter(i => (i.tipo_servizio || '').toLowerCase().includes(value));
+        updateInterventionsTable(filtered);
+    });
 }
 
 // FUNZIONE CORRETTA - Aggiorna le informazioni ore nel modal

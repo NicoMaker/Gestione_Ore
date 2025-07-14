@@ -729,3 +729,264 @@ td,
 th {
   text-align: center !important;
 }
+
+.input-search {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 999px;
+  font-size: 1rem;
+  background: var(--white);
+  margin-bottom: 0.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(30,64,175,0.04);
+}
+.input-search:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+#lista-dipendenti {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0 0 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.dipendente-item {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.dipendente-item:hover {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+.combo-search-group {
+  position: relative;
+}
+.combo-search-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: relative;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(30,64,175,0.06);
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+.combo-search-wrapper select {
+  margin-bottom: 0.2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--gray-300);
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.combo-search-wrapper select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.13);
+}
+.input-search-combo {
+  margin-bottom: 0.2rem;
+  border-radius: 999px;
+  border: 2px solid var(--primary-light);
+  font-size: 1rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--gray-50);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-search-combo:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+.input-search-table {
+  width: 320px;
+  max-width: 100%;
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 999px;
+  font-size: 1rem;
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(30,64,175,0.04);
+}
+.input-search-table:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+@media (max-width: 600px) {
+  .input-search-table {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.input-combo {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border: 2px solid var(--primary-light);
+  border-radius: 999px;
+  font-size: 1rem;
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(30,64,175,0.04);
+}
+.input-combo:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+.dropdown-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+  background: var(--white);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  margin: 0;
+  padding: 0.3rem 0;
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+  animation: fadeInCombo 0.18s;
+}
+@keyframes fadeInCombo {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.dropdown-item {
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background 0.18s, color 0.18s;
+  font-size: 1rem;
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background: var(--primary-light);
+  color: var(--white);
+}
+.dropdown-empty {
+  color: var(--gray-400);
+  padding: 0.7rem 1.2rem;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .dropdown-list { font-size: 0.98rem; }
+}
+
+.combo-select {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  border: 2px solid var(--gray-300);
+  font-size: 1rem;
+  background: var(--white);
+  margin-top: 0.1rem;
+  position: absolute;
+  left: 0;
+  z-index: 20;
+  display: none;
+  overflow-y: auto;
+  padding: 0;
+}
+.combo-select option {
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.combo-select option:hover, .combo-select option:focus {
+  background: var(--primary-light);
+  color: var(--white);
+}
+.combo-search-wrapper { position: relative; }
+@media (max-width: 600px) {
+  .combo-select { font-size: 0.98rem; }
+}
+
+.combo-custom {
+  position: relative;
+  width: 100%;
+}
+.combo-input {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border: 2px solid var(--primary-light);
+  border-radius: 999px;
+  font-size: 1rem;
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(30,64,175,0.04);
+  cursor: pointer;
+}
+.combo-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+.combo-dropdown {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 110%;
+  z-index: 30;
+  background: var(--white);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin-top: 0.2rem;
+}
+.combo-dropdown-search {
+  width: 100%;
+  margin-bottom: 0.3rem;
+  border-radius: 999px;
+  border: 2px solid var(--primary-light);
+  font-size: 1rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--gray-50);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.combo-dropdown-search:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+}
+.combo-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.combo-dropdown-item {
+  padding: 0.7rem 1.2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  font-size: 1rem;
+}
+.combo-dropdown-item:hover, .combo-dropdown-item:focus {
+  background: var(--primary-light);
+  color: var(--white);
+}
+.combo-dropdown-empty {
+  color: var(--gray-400);
+  padding: 0.7rem 1.2rem;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .combo-dropdown-list { font-size: 0.98rem; }
+}

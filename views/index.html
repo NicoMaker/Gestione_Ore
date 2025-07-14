@@ -58,11 +58,21 @@
                 <div class="form-card">
                     <h2 class="form-title">Registra Intervento</h2>
                     <form id="form-intervento" class="form">
-                        <div class="form-group">
+                        <div class="form-group combo-search-group">
                             <label for="cliente_id">Seleziona Cliente</label>
-                            <select id="cliente_id" name="cliente_id">
-                                <option value="">-- Seleziona Cliente --</option>
-                            </select>
+                            <div class="combo-search-wrapper">
+                                <select id="cliente_id" name="cliente_id">
+                                    <option value="">-- Seleziona Cliente --</option>
+                                </select>
+                                <input type="text" id="search-clienti" class="input-search-combo" placeholder="Cerca cliente..." autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group" id="dipendenti-search-group" style="display:none;">
+                            <label for="combo-dipendenti">Cerca Dipendente</label>
+                            <div class="combo-search-wrapper">
+                                <input type="text" id="combo-dipendenti" class="input-combo" placeholder="Cerca dipendente..." autocomplete="off">
+                                <ul id="dropdown-dipendenti" class="dropdown-list"></ul>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="tipo_servizio">Tipo Servizio</label>
@@ -84,6 +94,7 @@
                 <div class="table-card">
                     <div class="table-header">
                         <h2 class="table-title">Lista Clienti & Ore</h2>
+                        <input type="text" id="search-lista-clienti" class="input-search-table" placeholder="Cerca nella lista clienti..." autocomplete="off">
                         <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">
                             Elimina Tutti i Clienti
                         </button>
