@@ -59,19 +59,13 @@
                     <h2 class="form-title">Registra Intervento</h2>
                     <form id="form-intervento" class="form">
                         <div class="form-group combo-search-group">
-                            <label for="cliente_id">Seleziona Cliente</label>
-                            <div class="combo-search-wrapper">
-                                <select id="cliente_id" name="cliente_id">
-                                    <option value="">-- Seleziona Cliente --</option>
-                                </select>
-                                <input type="text" id="search-clienti" class="input-search-combo" placeholder="Cerca cliente..." autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="form-group" id="dipendenti-search-group" style="display:none;">
-                            <label for="combo-dipendenti">Cerca Dipendente</label>
-                            <div class="combo-search-wrapper">
-                                <input type="text" id="combo-dipendenti" class="input-combo" placeholder="Cerca dipendente..." autocomplete="off">
-                                <ul id="dropdown-dipendenti" class="dropdown-list"></ul>
+                            <label for="combo-clienti">Seleziona Cliente</label>
+                            <div class="combo-custom" id="combo-clienti-box">
+                                <input type="text" id="combo-clienti-input" class="combo-input" placeholder="Seleziona cliente..." readonly autocomplete="off">
+                                <div class="combo-dropdown" id="combo-clienti-dropdown">
+                                    <input type="text" id="combo-clienti-search" class="combo-dropdown-search" placeholder="Cerca cliente..." autocomplete="off">
+                                    <ul id="combo-clienti-list" class="combo-dropdown-list"></ul>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,6 +88,7 @@
                 <div class="table-card">
                     <div class="table-header">
                         <h2 class="table-title">Lista Clienti & Ore</h2>
+                        <input type="text" id="search-utenti" class="input-search-table" placeholder="Cerca utente..." autocomplete="off">
                         <input type="text" id="search-lista-clienti" class="input-search-table" placeholder="Cerca nella lista clienti..." autocomplete="off">
                         <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">
                             Elimina Tutti i Clienti

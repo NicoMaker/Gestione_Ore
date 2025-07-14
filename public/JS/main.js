@@ -607,6 +607,26 @@ if (searchListaClientiInput) {
     });
 }
 
+const searchUtentiInput = document.getElementById('search-utenti');
+
+if (searchUtentiInput) {
+    searchUtentiInput.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        if (!value) {
+            updateClientiTable(clientiList);
+            return;
+        }
+        const filtered = clientiList.filter(c => {
+            return (
+                (c.ragione_sociale || '').toLowerCase().includes(value) ||
+                (c.indirizzo || '').toLowerCase().includes(value) ||
+                (c.email || '').toLowerCase().includes(value)
+            );
+        });
+        updateClientiTable(filtered);
+    });
+}
+
 const comboClientiInput = document.getElementById('combo-clienti');
 const dropdownClienti = document.getElementById('dropdown-clienti');
 const comboDipendentiInput = document.getElementById('combo-dipendenti');
