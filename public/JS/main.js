@@ -172,6 +172,8 @@ async function caricaClienti() {
 
             updateClientiTable(result)
             updateClienteSelect(result)
+            clientiList = result;
+            filterClienti(); // <--- Applica subito i filtri dopo aver caricato
         } else {
             showAlert("Errore nel caricamento dei clienti: " + (result.error || "Errore sconosciuto"), "error")
         }
@@ -627,19 +629,9 @@ if (searchClientiInput && clienteSelect) {
 // Ricerca nella lista clienti (sopra tabella)
 if (searchListaClientiInput) {
     searchListaClientiInput.addEventListener('input', function () {
-        const value = this.value.toLowerCase();
-        if (!value) {
-            updateClientiTable(clientiList);
-            return;
-        }
-        const filtered = clientiList.filter(c => {
-            return (
-                (c.ragione_sociale || '').toLowerCase().includes(value) ||
-                (c.indirizzo || '').toLowerCase().includes(value) ||
-                (c.email || '').toLowerCase().includes(value)
-            );
-        });
-        updateClientiTable(filtered);
+        searchText = this.value.toLowerCase();
+        filterClienti();
+        saveSearchState();
     });
 }
 
@@ -726,6 +718,9 @@ function loadSearchState() {
         if (document.getElementById('search-utenti')) {
             document.getElementById('search-utenti').value = searchText;
         }
+        if (document.getElementById('search-lista-clienti')) {
+            document.getElementById('search-lista-clienti').value = searchText;
+        }
     }
     if (Array.isArray(state.multiStatusFilter)) {
         multiStatusFilter = state.multiStatusFilter;
@@ -804,6 +799,7 @@ if (searchUtentiInput) {
     searchUtentiInput.addEventListener('input', function () {
         searchText = this.value.toLowerCase();
         filterClienti();
+        saveSearchState();
     });
 }
 // Inizializza combo multi-stato al DOMContentLoaded
