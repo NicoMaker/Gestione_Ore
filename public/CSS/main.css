@@ -990,3 +990,8 @@ th {
 @media (max-width: 600px) {
   .combo-dropdown-list { font-size: 0.98rem; }
 }
+
+
+#select-status-filter{
+  display: none;
+}

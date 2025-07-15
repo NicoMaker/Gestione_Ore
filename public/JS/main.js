@@ -697,7 +697,7 @@ function setupMultiStatusCombo() {
             const map = {
                 'status-success': 'Verde',
                 'status-warning': 'Giallo',
-                'status-light-danger': 'Rosa',
+                'status-light-danger': 'Arancione',
                 'status-danger': 'Rosso'
             };
             comboLabel.textContent = selected.map(s => map[s]).join(', ');
@@ -899,13 +899,14 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
     }
 }
 
-// Filtro stato - gestione eventi
+// Sostituisco la gestione dei checkbox con la select multipla per il filtro stato
 function initializeStatusFilter() {
-    const filterAll = document.getElementById("filter-all");
-    const statusCheckboxes = Array.from(document.querySelectorAll(".filter-status"));
+    const statusSelect = document.getElementById("status-multiselect");
+    if (!statusSelect) return;
 
     function getSelectedStatuses() {
-        return statusCheckboxes.filter(cb => cb.checked).map(cb => cb.dataset.status);
+        // Ottieni tutti i valori selezionati
+        return Array.from(statusSelect.selectedOptions).map(opt => opt.value);
     }
 
     function applyStatusFilter() {
@@ -915,22 +916,9 @@ function initializeStatusFilter() {
         filterClienti(); // Aggiorna la tabella con il filtro combinato
     }
 
-    // Gestione "Tutti"
-    filterAll.addEventListener("change", function() {
-        if (filterAll.checked) {
-            statusCheckboxes.forEach(cb => cb.checked = true);
-        } else {
-            statusCheckboxes.forEach(cb => cb.checked = false);
-        }
-        applyStatusFilter();
-    });
+    // Evento su cambio selezione
+    statusSelect.addEventListener("change", applyStatusFilter);
 
-    // Gestione singoli
-    statusCheckboxes.forEach(cb => {
-        cb.addEventListener("change", function() {
-            const allChecked = statusCheckboxes.every(cb => cb.checked);
-            filterAll.checked = allChecked;
-            applyStatusFilter();
-        });
-    });
+    // Applica subito il filtro all'avvio
+    applyStatusFilter();
 }
