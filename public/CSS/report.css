@@ -662,8 +662,12 @@ th {
   margin-bottom: 0.1rem;
 }
 @media (max-width: 600px) {
-  .search-interventi-group { margin: 0.7rem 0 1rem 0; }
-  .search-label { font-size: 0.98rem; }
+  .search-interventi-group {
+    margin: 0.7rem 0 1rem 0;
+  }
+  .search-label {
+    font-size: 0.98rem;
+  }
 }
 
 .combo-search-group {
@@ -676,7 +680,7 @@ th {
   position: relative;
   background: var(--white);
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(30,64,175,0.06);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.06);
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 .combo-select {
@@ -690,7 +694,7 @@ th {
 }
 .combo-select:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(37,99,235,0.13);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.13);
 }
 .input-search-combo {
   margin-bottom: 0.2rem;
@@ -704,5 +708,9 @@ th {
 .input-search-combo:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.13);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+}
+
+.search-label {
+  margin-left: 10px;
 }

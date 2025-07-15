@@ -98,16 +98,17 @@ db.serialize(() => {
                 console.log(`      📍 Indirizzo: ${cliente.indirizzo}`);
                 console.log(`      📧 Email: ${cliente.email}`);
                 console.log(`      ⏱️ Ore acquistate: ${cliente.ore_acquistate}`);
-                console.log(`      🔄 Ore residue: ${cliente.ore_residue}`);
 
                 if (cliente.interventi.length > 0) {
                     console.log(`      📋 Interventi creati per questo cliente:`);
                     cliente.interventi.forEach((int, idx) => {
-                        console.log(`         #${idx + 1}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`);
+                        console.log(`         #${cliente.ragione_sociale}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`);
                     });
                 } else {
                     console.log(`      ⚠️ Nessun intervento generato per questo cliente.`);
                 }
+
+                console.log(`      🔄 Ore residue: ${cliente.ore_residue}`);
 
                 if (cliente.interventi.length === 0) {
                     completed++;
