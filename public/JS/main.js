@@ -812,6 +812,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSearchState(); // <--- Carica stato all'avvio
     setupMultiStatusCombo();
     filterClienti(); // <--- Applica subito filtri e ricerca
+    // Se torniamo dal report, i filtri e la ricerca sono già applicati
 });
 
 const comboClientiInput = document.getElementById('combo-clienti');
