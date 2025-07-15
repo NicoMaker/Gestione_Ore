@@ -91,6 +91,28 @@
                 <div class="table-card">
                     <div class="table-header">
                         <h2 class="table-title">Lista Clienti & Ore</h2>
+                        <div id="status-filter-group" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                                <input type="checkbox" id="filter-all" checked>
+                                <span class="status-indicator status-success" style="background-color: #888;"></span> Tutti
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                                <input type="checkbox" class="filter-status" data-status="status-success" checked>
+                                <span class="status-indicator status-success"></span> Verde
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                                <input type="checkbox" class="filter-status" data-status="status-warning" checked>
+                                <span class="status-indicator status-warning"></span> Giallo
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                                <input type="checkbox" class="filter-status" data-status="status-light-danger" checked>
+                                <span class="status-indicator status-light-danger"></span> Rosa
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                                <input type="checkbox" class="filter-status" data-status="status-danger" checked>
+                                <span class="status-indicator status-danger"></span> Rosso
+                            </label>
+                        </div>
                         <input type="text" id="search-utenti" class="input-search-table" placeholder="Cerca utente..."
                             autocomplete="off">
                         <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">

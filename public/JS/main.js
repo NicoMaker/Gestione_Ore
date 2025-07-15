@@ -32,10 +32,32 @@ const searchListaClientiInput = document.getElementById('search-lista-clienti');
 let clientiList = [];
 let dipendentiList = [];
 
+let statusFilter = ["status-success", "status-warning", "status-light-danger", "status-danger"];
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     caricaClienti()
     initializeEventListeners()
+    initializeStatusFilter();
+    const tableHeader = document.querySelector('.table-header');
+    if (tableHeader && !document.getElementById('select-status-filter')) {
+        const select = document.createElement('select');
+        select.id = 'select-status-filter';
+        select.style.marginRight = '1rem';
+        select.style.padding = '0.4rem 1rem';
+        select.style.borderRadius = '8px';
+        select.style.border = '1.5px solid #d1d5db';
+        select.style.fontSize = '1rem';
+        select.style.background = '#f8fafc';
+        select.innerHTML = `
+            <option value="all">Tutti gli stati</option>
+            <option value="status-success">Verde</option>
+            <option value="status-warning">Giallo</option>
+            <option value="status-light-danger">Arancione</option>
+            <option value="status-danger">Rosso</option>
+        `;
+        tableHeader.insertBefore(select, tableHeader.firstChild);
+    }
 })
 
 // Event listeners
@@ -197,6 +219,8 @@ function updateClientiTable(clienti) {
                 break;
         }
 
+        // FILTRO: mostra solo se lo stato è selezionato
+        if (!statusFilter.includes(statoClass)) return;
 
         const row = document.createElement("tr")
         row.dataset.clienteId = cliente.id
@@ -218,7 +242,6 @@ function updateClientiTable(clienti) {
       <td class="text-success">${cliente.ore_residue.toFixed(1)}</td>
 
     <td><p>${percentualeUsata.toFixed(1)}%</p></td>
-
 
       <td>
          <span class="status-indicator ${statoClass}" title="Ore residue: ${cliente.ore_residue.toFixed(1)} ore"></span>
@@ -620,25 +643,122 @@ if (searchListaClientiInput) {
     });
 }
 
-const searchUtentiInput = document.getElementById('search-utenti');
+// --- MULTI-SELECT STATO (COMBO PALLINI) ---
+let multiStatusFilter = ["status-success", "status-warning", "status-light-danger", "status-danger"];
 
+function setupMultiStatusCombo() {
+    const comboInput = document.getElementById('combo-multistate-input');
+    const comboDropdown = document.getElementById('combo-multistate-dropdown');
+    const comboLabel = document.getElementById('combo-multistate-label');
+    const allCheckbox = document.getElementById('multi-status-all');
+    const statusCheckboxes = Array.from(document.querySelectorAll('.multi-status'));
+
+    // Apri/chiudi dropdown
+    comboInput.addEventListener('click', function(e) {
+        comboDropdown.style.display = comboDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    comboInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            comboDropdown.style.display = comboDropdown.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+    document.addEventListener('click', function(e) {
+        if (!comboInput.contains(e.target) && !comboDropdown.contains(e.target)) {
+            comboDropdown.style.display = 'none';
+        }
+    });
+
+    // Gestione "Tutti"
+    allCheckbox.addEventListener('change', function() {
+        if (allCheckbox.checked) {
+            statusCheckboxes.forEach(cb => cb.checked = true);
+        } else {
+            statusCheckboxes.forEach(cb => cb.checked = false);
+        }
+        updateMultiStatusFilter();
+    });
+    // Gestione singoli
+    statusCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const allChecked = statusCheckboxes.every(cb => cb.checked);
+            allCheckbox.checked = allChecked;
+            updateMultiStatusFilter();
+        });
+    });
+    // Aggiorna filtro e label
+    function updateMultiStatusFilter() {
+        const selected = statusCheckboxes.filter(cb => cb.checked).map(cb => cb.dataset.status);
+        multiStatusFilter = selected.length === 0 ? ["status-success", "status-warning", "status-light-danger", "status-danger"] : selected;
+        // Aggiorna etichetta
+        if (selected.length === 0 || selected.length === 4) {
+            comboLabel.textContent = 'Tutti gli stati';
+        } else {
+            const map = {
+                'status-success': 'Verde',
+                'status-warning': 'Giallo',
+                'status-light-danger': 'Arancione',
+                'status-danger': 'Rosso'
+            };
+            comboLabel.textContent = selected.map(s => map[s]).join(', ');
+        }
+        filterClienti();
+    }
+}
+
+// LOGICA DI FILTRAGGIO COMBINATO
+let searchText = "";
+function filterClienti() {
+    let filtered = clientiList;
+    // Filtro testo
+    if (searchText) {
+        filtered = filtered.filter(c =>
+            (c.ragione_sociale || '').toLowerCase().includes(searchText) ||
+            (c.indirizzo || '').toLowerCase().includes(searchText) ||
+            (c.email || '').toLowerCase().includes(searchText)
+        );
+    }
+    // Filtro stato da combo multi
+    filtered = filtered.filter(c => {
+        const oreUtilizzate = (c.ore_acquistate - c.ore_residue);
+        const percentualeUsata = (oreUtilizzate / c.ore_acquistate) * 100;
+        let statoClass = "";
+        switch (true) {
+            case (c.ore_residue <= 0):
+                statoClass = "status-danger"; break;
+            case (percentualeUsata <= 70):
+                statoClass = "status-success"; break;
+            case (percentualeUsata <= 85):
+                statoClass = "status-warning"; break;
+            case (percentualeUsata <= 99.9):
+                statoClass = "status-light-danger"; break;
+        }
+        return multiStatusFilter.includes(statoClass);
+    });
+    updateClientiTable(filtered);
+    // Evidenzia tabella se ricerca attiva e tutti gli stati selezionati
+    const tableCard = document.querySelector('.table-card');
+    if (tableCard) {
+        if (searchText && multiStatusFilter.length === 4) {
+            tableCard.classList.add('highlight-search');
+        } else {
+            tableCard.classList.remove('highlight-search');
+        }
+    }
+}
+// EVENTI DI RICERCA
+const searchUtentiInput = document.getElementById('search-utenti');
 if (searchUtentiInput) {
     searchUtentiInput.addEventListener('input', function () {
-        const value = this.value.toLowerCase();
-        if (!value) {
-            updateClientiTable(clientiList);
-            return;
-        }
-        const filtered = clientiList.filter(c => {
-            return (
-                (c.ragione_sociale || '').toLowerCase().includes(value) ||
-                (c.indirizzo || '').toLowerCase().includes(value) ||
-                (c.email || '').toLowerCase().includes(value)
-            );
-        });
-        updateClientiTable(filtered);
+        searchText = this.value.toLowerCase();
+        filterClienti();
     });
 }
+// Inizializza combo multi-stato al DOMContentLoaded
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupMultiStatusCombo();
+});
 
 const comboClientiInput = document.getElementById('combo-clienti');
 const dropdownClienti = document.getElementById('dropdown-clienti');
@@ -777,4 +897,40 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
             comboList.appendChild(li);
         });
     }
+}
+
+// Filtro stato - gestione eventi
+function initializeStatusFilter() {
+    const filterAll = document.getElementById("filter-all");
+    const statusCheckboxes = Array.from(document.querySelectorAll(".filter-status"));
+
+    function getSelectedStatuses() {
+        return statusCheckboxes.filter(cb => cb.checked).map(cb => cb.dataset.status);
+    }
+
+    function applyStatusFilter() {
+        const selected = getSelectedStatuses();
+        // Se nessuno selezionato, mostra tutti
+        statusFilter = selected.length === 0 ? ["status-success", "status-warning", "status-light-danger", "status-danger"] : selected;
+        filterClienti(); // Aggiorna la tabella con il filtro combinato
+    }
+
+    // Gestione "Tutti"
+    filterAll.addEventListener("change", function() {
+        if (filterAll.checked) {
+            statusCheckboxes.forEach(cb => cb.checked = true);
+        } else {
+            statusCheckboxes.forEach(cb => cb.checked = false);
+        }
+        applyStatusFilter();
+    });
+
+    // Gestione singoli
+    statusCheckboxes.forEach(cb => {
+        cb.addEventListener("change", function() {
+            const allChecked = statusCheckboxes.every(cb => cb.checked);
+            filterAll.checked = allChecked;
+            applyStatusFilter();
+        });
+    });
 }
