@@ -103,15 +103,21 @@ function updateMaxHours() {
 
 // Validate intervention hours in real-time
 function validateInterventionHours() {
-    const selectedOption = clienteSelect.selectedOptions[0]
+    const clienteId = document.getElementById('cliente_id_hidden')?.value;
     const oreUtilizzate = Number.parseFloat(oreUtilizzateInput.value)
 
-    if (!selectedOption || !selectedOption.dataset.oreResidue) {
+    if (!clienteId) {
         oreUtilizzateInput.setCustomValidity("Seleziona prima un cliente")
         return false
     }
 
-    const oreResidue = Number.parseFloat(selectedOption.dataset.oreResidue)
+    const cliente = clientiList.find(c => String(c.id) === String(clienteId));
+    if (!cliente) {
+        oreUtilizzateInput.setCustomValidity("Cliente non trovato")
+        return false
+    }
+
+    const oreResidue = Number.parseFloat(cliente.ore_residue)
 
     if (isNaN(oreUtilizzate) || oreUtilizzate <= 0) {
         oreUtilizzateInput.setCustomValidity("Inserisci un numero di ore valido maggiore di 0")
@@ -330,41 +336,46 @@ async function handleClienteSubmit(e) {
 
 // Handle intervention form submit
 async function handleInterventoSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
-    const formData = new FormData(formIntervento)
-    const clienteId = formData.get("cliente_id")
-    const tipoServizio = formData.get("tipo_servizio")
-    const oreUtilizzate = Number.parseFloat(formData.get("ore_utilizzate"))
+    const formData = new FormData(formIntervento);
+    // Prendi l'ID cliente dal campo hidden
+    const clienteId = document.getElementById('cliente_id_hidden')?.value;
+    const tipoServizio = formData.get("tipo_servizio");
+    const oreUtilizzate = Number.parseFloat(formData.get("ore_utilizzate"));
 
     // Comprehensive validation
     if (!clienteId) {
-        showAlert("Seleziona un cliente", "error")
-        return
+        showAlert("Seleziona un cliente", "error");
+        return;
     }
 
     if (!tipoServizio || tipoServizio.trim() === "") {
-        showAlert("Tipo servizio è obbligatorio", "error")
-        return
+        showAlert("Tipo servizio è obbligatorio", "error");
+        return;
     }
 
     if (!oreUtilizzate || oreUtilizzate <= 0) {
-        showAlert("Ore utilizzate deve essere maggiore di 0", "error")
-        return
+        showAlert("Ore utilizzate deve essere maggiore di 0", "error");
+        return;
     }
 
     // Validate against available hours
     if (!validateInterventionHours()) {
-        showAlert("Controlla le ore utilizzate", "error")
-        return
+        showAlert("Controlla le ore utilizzate", "error");
+        return;
     }
 
-    const selectedOption = clienteSelect.selectedOptions[0]
-    const oreResidue = Number.parseFloat(selectedOption.dataset.oreResidue)
-
+    // Trova il cliente selezionato
+    const cliente = clientiList.find(c => String(c.id) === String(clienteId));
+    if (!cliente) {
+        showAlert("Cliente non trovato", "error");
+        return;
+    }
+    const oreResidue = Number.parseFloat(cliente.ore_residue);
     if (oreUtilizzate > oreResidue) {
-        showAlert(`Ore insufficienti. Disponibili: ${oreResidue.toFixed(1)} ore`, "error")
-        return
+        showAlert(`Ore insufficienti. Disponibili: ${oreResidue.toFixed(1)} ore`, "error");
+        return;
     }
 
     try {
@@ -378,21 +389,23 @@ async function handleInterventoSubmit(e) {
                 tipo_servizio: tipoServizio.trim(),
                 ore_utilizzate: oreUtilizzate,
             }),
-        })
+        });
 
-        const result = await response.json()
+        const result = await response.json();
 
         if (response.ok) {
-            showAlert("Intervento registrato con successo", "success")
-            formIntervento.reset()
-            oreUtilizzateInput.setCustomValidity("")
-            caricaClienti()
+            showAlert("Intervento registrato con successo", "success");
+            formIntervento.reset();
+            oreUtilizzateInput.setCustomValidity("");
+            if (document.getElementById('combo-clienti-input')) document.getElementById('combo-clienti-input').value = '';
+            if (document.getElementById('cliente_id_hidden')) document.getElementById('cliente_id_hidden').value = '';
+            caricaClienti();
         } else {
-            showAlert(result.error || "Errore nella registrazione dell'intervento", "error")
+            showAlert(result.error || "Errore nella registrazione dell'intervento", "error");
         }
     } catch (error) {
-        console.error("Error adding intervention:", error)
-        showAlert("Errore di connessione", "error")
+        console.error("Error adding intervention:", error);
+        showAlert("Errore di connessione", "error");
     }
 }
 
@@ -573,7 +586,7 @@ function hideAlert() {
 if (searchClientiInput && clienteSelect) {
     searchClientiInput.addEventListener('input', function () {
         const value = this.value.toLowerCase();
-        clienteSelect.innerHTML = '<option value="">-- Seleziona Cliente --</option>';
+        clienteSelect.innerHTML = '<option value="">-- Seleziona Cliente --</option>'
         let filtered = clientiList;
         if (value) {
             filtered = clientiList.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
@@ -715,6 +728,7 @@ const comboInput = document.getElementById('combo-clienti-input');
 const comboDropdown = document.getElementById('combo-clienti-dropdown');
 const comboSearch = document.getElementById('combo-clienti-search');
 const comboList = document.getElementById('combo-clienti-list');
+const clienteIdHidden = document.getElementById('cliente_id_hidden');
 let comboSelectedId = null;
 
 if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
@@ -757,6 +771,7 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
             li.addEventListener('mousedown', function (e) {
                 comboInput.value = c.ragione_sociale;
                 comboSelectedId = c.id;
+                if (clienteIdHidden) clienteIdHidden.value = c.id;
                 comboDropdown.style.display = 'none';
             });
             comboList.appendChild(li);
