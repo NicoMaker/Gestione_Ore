@@ -2,8 +2,6 @@ const db = require("../db");
 const fs = require("fs");
 const path = require("path");
 
-const USER_ID_CREAZIONE = parseInt(process.argv[2] || "1");
-
 const randomOreAcquistate = () =>
     Math.floor(Math.random() * 100) + 1;
 
