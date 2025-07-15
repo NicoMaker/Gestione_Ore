@@ -697,7 +697,7 @@ function setupMultiStatusCombo() {
             const map = {
                 'status-success': 'Verde',
                 'status-warning': 'Giallo',
-                'status-light-danger': 'Arancione',
+                'status-light-danger': 'Rosa',
                 'status-danger': 'Rosso'
             };
             comboLabel.textContent = selected.map(s => map[s]).join(', ');
