@@ -94,30 +94,42 @@
                         <div id="status-filter-group"
                             style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
                             <label for="status-multiselect">Stato:</label>
-                            <div class="combo-multistate-box" id="combo-multistate-box" style="position: relative; min-width: 180px;">
-                                <div id="combo-multistate-input" class="combo-multistate-input" tabindex="0" style="padding: 0.4rem 1rem; border-radius: 8px; border: 1.5px solid #d1d5db; font-size: 1rem; background: #f8fafc; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                            <div class="combo-multistate-box" id="combo-multistate-box"
+                                style="position: relative; min-width: 180px;">
+                                <div id="combo-multistate-input" class="combo-multistate-input" tabindex="0"
+                                    style="padding: 0.4rem 1rem; border-radius: 8px; border: 1.5px solid #d1d5db; font-size: 1rem; background: #f8fafc; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
                                     <span id="combo-multistate-label">Tutti gli stati</span>
                                     <span style="margin-left: 0.5rem;">&#9662;</span>
                                 </div>
-                                <div id="combo-multistate-dropdown" class="combo-multistate-dropdown" style="display: none; position: absolute; top: 110%; left: 0; background: #fff; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; min-width: 180px; padding: 0.5rem 0;">
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
+                                <div id="combo-multistate-dropdown" class="combo-multistate-dropdown"
+                                    style="display: none; position: absolute; top: 110%; left: 0; background: #fff; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; min-width: 180px; padding: 0.5rem 0;">
+                                    <label
+                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
                                         <input type="checkbox" id="multi-status-all" checked>
-                                        <span class="status-indicator status-success" style="background-color: #888;"></span>
+                                        <span class="status-indicator status-success"
+                                            style="background-color: #888;"></span>
                                         Tutti
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-success" checked>
+                                    <label
+                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
+                                        <input type="checkbox" class="multi-status" data-status="status-success"
+                                            checked>
                                         <span class="status-indicator status-success"></span> Verde
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-warning" checked>
+                                    <label
+                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
+                                        <input type="checkbox" class="multi-status" data-status="status-warning"
+                                            checked>
                                         <span class="status-indicator status-warning"></span> Giallo
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-light-danger" checked>
-                                        <span class="status-indicator status-light-danger"></span> Arancione
+                                    <label
+                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
+                                        <input type="checkbox" class="multi-status" data-status="status-light-danger"
+                                            checked>
+                                        <span class="status-indicator status-light-danger"></span> Rosa
                                     </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
+                                    <label
+                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
                                         <input type="checkbox" class="multi-status" data-status="status-danger" checked>
                                         <span class="status-indicator status-danger"></span> Rosso
                                     </label>
