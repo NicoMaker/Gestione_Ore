@@ -703,6 +703,57 @@ function setupMultiStatusCombo() {
             comboLabel.textContent = selected.map(s => map[s]).join(', ');
         }
         filterClienti();
+        saveSearchState(); // <--- Salva stato ogni volta che cambia filtro
+    }
+}
+
+// --- PERSISTENZA STATO RICERCA E FILTRI ---
+const STORAGE_KEY = 'clienti_search_state';
+
+function saveSearchState() {
+    const state = {
+        searchText,
+        multiStatusFilter
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadSearchState() {
+    const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (typeof state.searchText === 'string') {
+        searchText = state.searchText;
+        // Aggiorna input se esiste
+        if (document.getElementById('search-utenti')) {
+            document.getElementById('search-utenti').value = searchText;
+        }
+    }
+    if (Array.isArray(state.multiStatusFilter)) {
+        multiStatusFilter = state.multiStatusFilter;
+        // Aggiorna checkboxes multi-stato se esistono
+        const statusCheckboxes = document.querySelectorAll('.multi-status');
+        statusCheckboxes.forEach(cb => {
+            cb.checked = multiStatusFilter.includes(cb.dataset.status);
+        });
+        // Aggiorna "Tutti" se serve
+        const allCheckbox = document.getElementById('multi-status-all');
+        if (allCheckbox) {
+            allCheckbox.checked = statusCheckboxes.length > 0 && Array.from(statusCheckboxes).every(cb => cb.checked);
+        }
+        // Aggiorna etichetta
+        const comboLabel = document.getElementById('combo-multistate-label');
+        if (comboLabel) {
+            if (multiStatusFilter.length === 0 || multiStatusFilter.length === 4) {
+                comboLabel.textContent = 'Tutti gli stati';
+            } else {
+                const map = {
+                    'status-success': 'Verde',
+                    'status-warning': 'Giallo',
+                    'status-light-danger': 'Arancione',
+                    'status-danger': 'Rosso'
+                };
+                comboLabel.textContent = multiStatusFilter.map(s => map[s]).join(', ');
+            }
+        }
     }
 }
 
@@ -745,6 +796,7 @@ function filterClienti() {
             tableCard.classList.remove('highlight-search');
         }
     }
+    saveSearchState(); // <--- Salva stato ogni volta che filtri
 }
 // EVENTI DI RICERCA
 const searchUtentiInput = document.getElementById('search-utenti');
@@ -757,7 +809,9 @@ if (searchUtentiInput) {
 // Inizializza combo multi-stato al DOMContentLoaded
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadSearchState(); // <--- Carica stato all'avvio
     setupMultiStatusCombo();
+    filterClienti(); // <--- Applica subito filtri e ricerca
 });
 
 const comboClientiInput = document.getElementById('combo-clienti');
