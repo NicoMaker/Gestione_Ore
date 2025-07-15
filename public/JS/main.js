@@ -903,6 +903,7 @@ const comboDropdown = document.getElementById('combo-clienti-dropdown');
 const comboSearch = document.getElementById('combo-clienti-search');
 const comboList = document.getElementById('combo-clienti-list');
 const clienteIdHidden = document.getElementById('cliente_id_hidden');
+const statoClienteSelect = document.getElementById('stato_cliente');
 let comboSelectedId = null;
 
 if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
@@ -910,7 +911,7 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
     comboInput.addEventListener('click', function (e) {
         comboDropdown.style.display = 'block';
         comboSearch.value = '';
-        renderComboList(clientiList);
+        renderComboList(getFilteredClientiList());
         comboSearch.focus();
     });
     // Chiudi dropdown se clicchi fuori
@@ -922,12 +923,39 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
     // Ricerca live
     comboSearch.addEventListener('input', function () {
         const value = this.value.toLowerCase();
-        let filtered = clientiList;
+        let filtered = getFilteredClientiList();
         if (value) {
-            filtered = clientiList.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
+            filtered = filtered.filter(c => (c.ragione_sociale || '').toLowerCase().includes(value));
         }
         renderComboList(filtered);
     });
+    // Filtro stato: aggiorna lista clienti quando cambia la select stato
+    if (statoClienteSelect) {
+        statoClienteSelect.addEventListener('change', function () {
+            renderComboList(getFilteredClientiList());
+        });
+    }
+    function getFilteredClientiList() {
+        if (!statoClienteSelect) return clientiList;
+        const selected = Array.from(statoClienteSelect.selectedOptions).map(opt => opt.value);
+        if (selected.length === 0) return clientiList;
+        return clientiList.filter(c => {
+            const oreUtilizzate = (c.ore_acquistate - c.ore_residue);
+            const percentualeUsata = (oreUtilizzate / c.ore_acquistate) * 100;
+            let statoClass = '';
+            switch (true) {
+                case (c.ore_residue <= 0):
+                    statoClass = 'status-danger'; break;
+                case (percentualeUsata <= 70):
+                    statoClass = 'status-success'; break;
+                case (percentualeUsata <= 85):
+                    statoClass = 'status-warning'; break;
+                case (percentualeUsata <= 99.9):
+                    statoClass = 'status-light-danger'; break;
+            }
+            return selected.includes(statoClass);
+        });
+    }
     function renderComboList(list) {
         comboList.innerHTML = '';
         if (list.length === 0) {
@@ -939,7 +967,21 @@ if (comboBox && comboInput && comboDropdown && comboSearch && comboList) {
         }
         list.forEach(c => {
             const li = document.createElement('li');
-            li.textContent = `${c.ragione_sociale || 'Cliente senza nome'} (${c.ore_residue.toFixed(1)} ore)`;
+            // Calcola stato
+            const oreUtilizzate = (c.ore_acquistate - c.ore_residue);
+            const percentualeUsata = (oreUtilizzate / c.ore_acquistate) * 100;
+            let statoClass = '';
+            switch (true) {
+                case (c.ore_residue <= 0):
+                    statoClass = 'status-danger'; break;
+                case (percentualeUsata <= 70):
+                    statoClass = 'status-success'; break;
+                case (percentualeUsata <= 85):
+                    statoClass = 'status-warning'; break;
+                case (percentualeUsata <= 99.9):
+                    statoClass = 'status-light-danger'; break;
+            }
+            li.innerHTML = `<span class="status-indicator ${statoClass}" style="margin-right:0.5rem;"></span>${c.ragione_sociale || 'Cliente senza nome'} (${c.ore_residue.toFixed(1)} ore)`;
             li.className = 'combo-dropdown-item';
             li.tabIndex = 0;
             li.addEventListener('mousedown', function (e) {
