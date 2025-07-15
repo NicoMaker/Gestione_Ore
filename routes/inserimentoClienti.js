@@ -97,7 +97,7 @@ db.serialize(() => {
                 console.log(`   ➕ ${cliente.ragione_sociale}`);
                 console.log(`      📍 Indirizzo: ${cliente.indirizzo}`);
                 console.log(`      📧 Email: ${cliente.email}`);
-                console.log(`      ⏱️ Ore acquistate: ${cliente.ore_acquistate}`);
+                console.log(`      ⏱️  Ore acquistate: ${cliente.ore_acquistate}`);
 
                 if (cliente.interventi.length > 0) {
                     console.log(`      📋 Interventi creati per questo cliente:`);
