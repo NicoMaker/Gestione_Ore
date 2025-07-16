@@ -17,7 +17,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <h2>Gestione Ore Cllienti - Assistenza</h2>
+                <h2>Gestione Ore Clienti - Assistenza</h2>
             </div>
         </div>
     </nav>
@@ -33,7 +33,7 @@
                         <div class="form-group">
                             <label for="ragione_sociale">Ragione Sociale</label>
                             <input type="text" id="ragione_sociale" name="ragione_sociale"
-                                placeholder="Inserisci ragione sociale">
+                                placeholder="Inserisci ragione sociale" required>
                         </div>
                         <div class="form-group">
                             <label for="indirizzo">Indirizzo</label>
@@ -45,8 +45,8 @@
                         </div>
                         <div class="form-group">
                             <label for="ore_acquistate">Ore Acquistate</label>
-                            <input type="number" id="ore_acquistate" name="ore_acquistate" step="0.1"
-                                placeholder="Inserisci ore acquistate">
+                            <input type="number" id="ore_acquistate" name="ore_acquistate" step="0.1" min="0.1"
+                                placeholder="Inserisci ore acquistate" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Aggiungi Cliente</button>
                     </form>
@@ -60,10 +60,10 @@
                     <form id="form-intervento" class="form">
                         <input type="hidden" name="cliente_id" id="cliente_id_hidden">
                         <div class="form-group combo-search-group">
-                            <label for="combo-clienti">-- Seleziona Cliente --</label>
+                            <label for="combo-clienti-input">Seleziona Cliente</label>
                             <div class="combo-custom" id="combo-clienti-box">
                                 <input type="text" id="combo-clienti-input" class="combo-input"
-                                    placeholder="Seleziona cliente..." readonly autocomplete="off">
+                                    placeholder="Cerca e seleziona cliente..." readonly autocomplete="off">
                                 <div class="combo-dropdown" id="combo-clienti-dropdown">
                                     <input type="text" id="combo-clienti-search" class="combo-dropdown-search"
                                         placeholder="Cerca cliente..." autocomplete="off">
@@ -74,12 +74,12 @@
                         <div class="form-group">
                             <label for="tipo_servizio">Tipo Servizio</label>
                             <input type="text" id="tipo_servizio" name="tipo_servizio"
-                                placeholder="Inserisci tipo servizio">
+                                placeholder="Inserisci tipo servizio" required>
                         </div>
                         <div class="form-group">
                             <label for="ore_utilizzate">Ore Utilizzate</label>
-                            <input type="number" id="ore_utilizzate" name="ore_utilizzate" step="0.1"
-                                placeholder="Inserisci ore utilizzate">
+                            <input type="number" id="ore_utilizzate" name="ore_utilizzate" step="0.1" min="0.1"
+                                placeholder="Inserisci ore utilizzate" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Registra Intervento</button>
                     </form>
@@ -91,56 +91,48 @@
                 <div class="table-card">
                     <div class="table-header">
                         <h2 class="table-title">Lista Clienti & Ore</h2>
-                        <div id="status-filter-group"
-                            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                            <label for="status-multiselect">Stato:</label>
-                            <div class="combo-multistate-box" id="combo-multistate-box"
-                                style="position: relative; min-width: 180px;">
-                                <div id="combo-multistate-input" class="combo-multistate-input" tabindex="0"
-                                    style="padding: 0.4rem 1rem; border-radius: 8px; border: 1.5px solid #d1d5db; font-size: 1rem; background: #f8fafc; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
-                                    <span id="combo-multistate-label">Tutti gli stati</span>
-                                    <span style="margin-left: 0.5rem;">&#9662;</span>
-                                </div>
-                                <div id="combo-multistate-dropdown" class="combo-multistate-dropdown"
-                                    style="display: none; position: absolute; top: 110%; left: 0; background: #fff; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; min-width: 180px; padding: 0.5rem 0;">
-                                    <label
-                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" id="multi-status-all" checked>
-                                        <span class="status-indicator status-success"
-                                            style="background-color: #888;"></span>
-                                        Tutti
-                                    </label>
-                                    <label
-                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-success"
-                                            checked>
-                                        <span class="status-indicator status-success"></span> Verde
-                                    </label>
-                                    <label
-                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-warning"
-                                            checked>
-                                        <span class="status-indicator status-warning"></span> Giallo
-                                    </label>
-                                    <label
-                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-light-danger"
-                                            checked>
-                                        <span class="status-indicator status-light-danger"></span> Arancione
-                                    </label>
-                                    <label
-                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 1rem; cursor: pointer;">
-                                        <input type="checkbox" class="multi-status" data-status="status-danger" checked>
-                                        <span class="status-indicator status-danger"></span> Rosso
-                                    </label>
+                        <div class="table-controls">
+                            <div class="status-filter-group">
+                                <label for="status-multiselect">Stato:</label>
+                                <div class="combo-multistate-box" id="combo-multistate-box">
+                                    <div id="combo-multistate-input" class="combo-multistate-input" tabindex="0">
+                                        <span id="combo-multistate-label">Tutti gli stati</span>
+                                        <span class="dropdown-arrow">&#9662;</span>
+                                    </div>
+                                    <div id="combo-multistate-dropdown" class="combo-multistate-dropdown">
+                                        <label class="multistate-option">
+                                            <input type="checkbox" id="multi-status-all" checked>
+                                            <span class="status-indicator status-all"></span> Tutti
+                                        </label>
+                                        <label class="multistate-option">
+                                            <input type="checkbox" class="multi-status" data-status="status-success"
+                                                checked>
+                                            <span class="status-indicator status-success"></span> Verde
+                                        </label>
+                                        <label class="multistate-option">
+                                            <input type="checkbox" class="multi-status" data-status="status-warning"
+                                                checked>
+                                            <span class="status-indicator status-warning"></span> Giallo
+                                        </label>
+                                        <label class="multistate-option">
+                                            <input type="checkbox" class="multi-status"
+                                                data-status="status-light-danger" checked>
+                                            <span class="status-indicator status-light-danger"></span> Arancione
+                                        </label>
+                                        <label class="multistate-option">
+                                            <input type="checkbox" class="multi-status" data-status="status-danger"
+                                                checked>
+                                            <span class="status-indicator status-danger"></span> Rosso
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
+                            <input type="text" id="search-utenti" class="input-search-table"
+                                placeholder="Cerca utente..." autocomplete="off">
+                            <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">
+                                Elimina Tutti i Clienti
+                            </button>
                         </div>
-                        <input type="text" id="search-utenti" class="input-search-table" placeholder="Cerca utente..."
-                            autocomplete="off">
-                        <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">
-                            Elimina Tutti i Clienti
-                        </button>
                     </div>
                     <div class="table-container">
                         <table id="tabella-clienti" class="data-table">
