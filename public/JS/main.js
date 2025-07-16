@@ -39,25 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     caricaClienti()
     initializeEventListeners()
     initializeStatusFilter();
-    const tableHeader = document.querySelector('.table-header');
-    if (tableHeader && !document.getElementById('select-status-filter')) {
-        const select = document.createElement('select');
-        select.id = 'select-status-filter';
-        select.style.marginRight = '1rem';
-        select.style.padding = '0.4rem 1rem';
-        select.style.borderRadius = '8px';
-        select.style.border = '1.5px solid #d1d5db';
-        select.style.fontSize = '1rem';
-        select.style.background = '#f8fafc';
-        select.innerHTML = `
-            <option value="all">Tutti gli stati</option>
-            <option value="status-success">Verde</option>
-            <option value="status-warning">Giallo</option>
-            <option value="status-light-danger">Arancione</option>
-            <option value="status-danger">Rosso</option>
-        `;
-        tableHeader.insertBefore(select, tableHeader.firstChild);
-    }
 })
 
 // Event listeners
