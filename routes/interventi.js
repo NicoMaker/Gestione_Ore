@@ -59,12 +59,9 @@ router.post("/add_intervento", (req, res) => {
         function (err) {
           if (err) {
             console.error("Error inserting intervention:", err);
-            return res
-              .status(500)
-              .json({
-                error:
-                  "Errore nell'inserimento dell'intervento: " + err.message,
-              });
+            return res.status(500).json({
+              error: "Errore nell'inserimento dell'intervento: " + err.message,
+            });
           }
 
           console.log("Intervention inserted with ID:", this.lastID);
@@ -76,13 +73,11 @@ router.post("/add_intervento", (req, res) => {
             (err2) => {
               if (err2) {
                 console.error("Error updating client hours:", err2);
-                return res
-                  .status(500)
-                  .json({
-                    error:
-                      "Errore nell'aggiornamento delle ore cliente: " +
-                      err2.message,
-                  });
+                return res.status(500).json({
+                  error:
+                    "Errore nell'aggiornamento delle ore cliente: " +
+                    err2.message,
+                });
               }
 
               console.log("Client hours updated successfully");
