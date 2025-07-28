@@ -1,183 +1,277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestione Ore Clienti - Assistenza</title>
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://www.lucasechi.it/wp-content/uploads/gestione-cliente-1.png" type="image/png">
-</head>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://www.lucasechi.it/wp-content/uploads/gestione-cliente-1.png"
+      type="image/png"
+    />
+  </head>
 
-<body>
+  <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <h2>Gestione Ore Clienti - Assistenza</h2>
-            </div>
+      <div class="nav-container">
+        <div class="nav-brand">
+          <h2>Gestione Ore Clienti - Assistenza</h2>
         </div>
+      </div>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="container">
-            <!-- Client Registration Form -->
-            <section class="form-section">
-                <div class="form-card">
-                    <h2 class="form-title">Anagrafica Clienti</h2>
-                    <form id="form-cliente" class="form">
-                        <div class="form-group">
-                            <label for="ragione_sociale">Ragione Sociale</label>
-                            <input type="text" id="ragione_sociale" name="ragione_sociale"
-                                placeholder="Inserisci ragione sociale" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="indirizzo">Indirizzo</label>
-                            <input type="text" id="indirizzo" name="indirizzo" placeholder="Inserisci indirizzo">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Inserisci email">
-                        </div>
-                        <div class="form-group">
-                            <label for="ore_acquistate">Ore Acquistate</label>
-                            <input type="number" id="ore_acquistate" name="ore_acquistate" step="0.1" min="0.1"
-                                placeholder="Inserisci ore acquistate" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Aggiungi Cliente</button>
-                    </form>
-                </div>
-            </section>
+      <div class="container">
+        <!-- Client Registration Form -->
+        <section class="form-section">
+          <div class="form-card">
+            <h2 class="form-title">Anagrafica Clienti</h2>
+            <form id="form-cliente" class="form">
+              <div class="form-group">
+                <label for="ragione_sociale">Ragione Sociale</label>
+                <input
+                  type="text"
+                  id="ragione_sociale"
+                  name="ragione_sociale"
+                  placeholder="Inserisci ragione sociale"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="indirizzo">Indirizzo</label>
+                <input
+                  type="text"
+                  id="indirizzo"
+                  name="indirizzo"
+                  placeholder="Inserisci indirizzo"
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Inserisci email"
+                />
+              </div>
+              <div class="form-group">
+                <label for="ore_acquistate">Ore Acquistate</label>
+                <input
+                  type="number"
+                  id="ore_acquistate"
+                  name="ore_acquistate"
+                  step="0.1"
+                  min="0.1"
+                  placeholder="Inserisci ore acquistate"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Aggiungi Cliente
+              </button>
+            </form>
+          </div>
+        </section>
 
-            <!-- Intervention Registration Form -->
-            <section class="form-section">
-                <div class="form-card">
-                    <h2 class="form-title">Registra Intervento</h2>
-                    <form id="form-intervento" class="form">
-                        <input type="hidden" name="cliente_id" id="cliente_id_hidden">
-                        <div class="form-group combo-search-group">
-                            <label for="combo-clienti-input">Seleziona Cliente</label>
-                            <div class="combo-custom" id="combo-clienti-box">
-                                <input type="text" id="combo-clienti-input" class="combo-input"
-                                    placeholder="Cerca e seleziona cliente..." readonly autocomplete="off">
-                                <div class="combo-dropdown" id="combo-clienti-dropdown">
-                                    <input type="text" id="combo-clienti-search" class="combo-dropdown-search"
-                                        placeholder="Cerca cliente..." autocomplete="off">
-                                    <ul id="combo-clienti-list" class="combo-dropdown-list"></ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="tipo_servizio">Tipo Servizio</label>
-                            <input type="text" id="tipo_servizio" name="tipo_servizio"
-                                placeholder="Inserisci tipo servizio" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="ore_utilizzate">Ore Utilizzate</label>
-                            <input type="number" id="ore_utilizzate" name="ore_utilizzate" step="0.1" min="0.1"
-                                placeholder="Inserisci ore utilizzate" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registra Intervento</button>
-                    </form>
+        <!-- Intervention Registration Form -->
+        <section class="form-section">
+          <div class="form-card">
+            <h2 class="form-title">Registra Intervento</h2>
+            <form id="form-intervento" class="form">
+              <input type="hidden" name="cliente_id" id="cliente_id_hidden" />
+              <div class="form-group combo-search-group">
+                <label for="combo-clienti-input">Seleziona Cliente</label>
+                <div class="combo-custom" id="combo-clienti-box">
+                  <input
+                    type="text"
+                    id="combo-clienti-input"
+                    class="combo-input"
+                    placeholder="Cerca e seleziona cliente..."
+                    readonly
+                    autocomplete="off"
+                  />
+                  <div class="combo-dropdown" id="combo-clienti-dropdown">
+                    <input
+                      type="text"
+                      id="combo-clienti-search"
+                      class="combo-dropdown-search"
+                      placeholder="Cerca cliente..."
+                      autocomplete="off"
+                    />
+                    <ul
+                      id="combo-clienti-list"
+                      class="combo-dropdown-list"
+                    ></ul>
+                  </div>
                 </div>
-            </section>
+              </div>
+              <div class="form-group">
+                <label for="tipo_servizio">Tipo Servizio</label>
+                <input
+                  type="text"
+                  id="tipo_servizio"
+                  name="tipo_servizio"
+                  placeholder="Inserisci tipo servizio"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="ore_utilizzate">Ore Utilizzate</label>
+                <input
+                  type="number"
+                  id="ore_utilizzate"
+                  name="ore_utilizzate"
+                  step="0.1"
+                  min="0.1"
+                  placeholder="Inserisci ore utilizzate"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Registra Intervento
+              </button>
+            </form>
+          </div>
+        </section>
 
-            <!-- Clients Table -->
-            <section class="table-section">
-                <div class="table-card">
-                    <div class="table-header">
-                        <h2 class="table-title">Lista Clienti & Ore</h2>
-                        <div class="table-controls">
-                            <div class="status-filter-group">
-                                <label for="status-multiselect">Stato:</label>
-                                <div class="combo-multistate-box" id="combo-multistate-box">
-                                    <div id="combo-multistate-input" class="combo-multistate-input" tabindex="0">
-                                        <span id="combo-multistate-label">Tutti gli stati</span>
-                                        <span class="dropdown-arrow">&#9662;</span>
-                                    </div>
-                                    <div id="combo-multistate-dropdown" class="combo-multistate-dropdown">
-                                        <label class="multistate-option">
-                                            <input type="checkbox" id="multi-status-all" checked>
-                                            <span class="status-indicator status-all"></span> Tutti
-                                        </label>
-                                        <label class="multistate-option">
-                                            <input type="checkbox" class="multi-status" data-status="status-success"
-                                                checked>
-                                            <span class="status-indicator status-success"></span> Verde
-                                        </label>
-                                        <label class="multistate-option">
-                                            <input type="checkbox" class="multi-status" data-status="status-warning"
-                                                checked>
-                                            <span class="status-indicator status-warning"></span> Giallo
-                                        </label>
-                                        <label class="multistate-option">
-                                            <input type="checkbox" class="multi-status"
-                                                data-status="status-light-danger" checked>
-                                            <span class="status-indicator status-light-danger"></span> Arancione
-                                        </label>
-                                        <label class="multistate-option">
-                                            <input type="checkbox" class="multi-status" data-status="status-danger"
-                                                checked>
-                                            <span class="status-indicator status-danger"></span> Rosso
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="text" id="search-utenti" class="input-search-table"
-                                placeholder="Cerca utente..." autocomplete="off">
-                            <button onclick="confermaEliminazioneTotale()" class="btn btn-danger">
-                                Elimina Tutti i Clienti
-                            </button>
-                        </div>
+        <!-- Clients Table -->
+        <section class="table-section">
+          <div class="table-card">
+            <div class="table-header">
+              <h2 class="table-title">Lista Clienti & Ore</h2>
+              <div class="table-controls">
+                <div class="status-filter-group">
+                  <label for="status-multiselect">Stato:</label>
+                  <div class="combo-multistate-box" id="combo-multistate-box">
+                    <div
+                      id="combo-multistate-input"
+                      class="combo-multistate-input"
+                      tabindex="0"
+                    >
+                      <span id="combo-multistate-label">Tutti gli stati</span>
+                      <span class="dropdown-arrow">&#9662;</span>
                     </div>
-                    <div class="table-container">
-                        <table id="tabella-clienti" class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Ragione Sociale</th>
-                                    <th>Indirizzo</th>
-                                    <th>Email</th>
-                                    <th>Ore Acquistate</th>
-                                    <th>Ore Utilizzate</th>
-                                    <th>Ore Residue</th>
-                                    <th>Percentuale Utilizzata</th>
-                                    <th>Stato</th>
-                                    <th>Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div
+                      id="combo-multistate-dropdown"
+                      class="combo-multistate-dropdown"
+                    >
+                      <label class="multistate-option">
+                        <input type="checkbox" id="multi-status-all" checked />
+                        <span class="status-indicator status-all"></span> Tutti
+                      </label>
+                      <label class="multistate-option">
+                        <input
+                          type="checkbox"
+                          class="multi-status"
+                          data-status="status-success"
+                          checked
+                        />
+                        <span class="status-indicator status-success"></span>
+                        Verde
+                      </label>
+                      <label class="multistate-option">
+                        <input
+                          type="checkbox"
+                          class="multi-status"
+                          data-status="status-warning"
+                          checked
+                        />
+                        <span class="status-indicator status-warning"></span>
+                        Giallo
+                      </label>
+                      <label class="multistate-option">
+                        <input
+                          type="checkbox"
+                          class="multi-status"
+                          data-status="status-light-danger"
+                          checked
+                        />
+                        <span
+                          class="status-indicator status-light-danger"
+                        ></span>
+                        Arancione
+                      </label>
+                      <label class="multistate-option">
+                        <input
+                          type="checkbox"
+                          class="multi-status"
+                          data-status="status-danger"
+                          checked
+                        />
+                        <span class="status-indicator status-danger"></span>
+                        Rosso
+                      </label>
                     </div>
+                  </div>
                 </div>
-            </section>
-        </div>
+                <input
+                  type="text"
+                  id="search-utenti"
+                  class="input-search-table"
+                  placeholder="Cerca utente..."
+                  autocomplete="off"
+                />
+                <button
+                  onclick="confermaEliminazioneTotale()"
+                  class="btn btn-danger"
+                >
+                  Elimina Tutti i Clienti
+                </button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="tabella-clienti" class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ragione Sociale</th>
+                    <th>Indirizzo</th>
+                    <th>Email</th>
+                    <th>Ore Acquistate</th>
+                    <th>Ore Utilizzate</th>
+                    <th>Ore Residue</th>
+                    <th>Percentuale Utilizzata</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <!-- Modal -->
     <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <h3 id="modal-title">Conferma</h3>
-            <p id="modal-message">Sei sicuro di voler procedere?</p>
-            <div class="modal-actions">
-                <button id="modal-confirm" class="btn btn-danger">Conferma</button>
-                <button id="modal-cancel" class="btn btn-secondary">Annulla</button>
-            </div>
+      <div class="modal-content">
+        <h3 id="modal-title">Conferma</h3>
+        <p id="modal-message">Sei sicuro di voler procedere?</p>
+        <div class="modal-actions">
+          <button id="modal-confirm" class="btn btn-danger">Conferma</button>
+          <button id="modal-cancel" class="btn btn-secondary">Annulla</button>
         </div>
+      </div>
     </div>
 
     <!-- Alert -->
     <div id="alert" class="alert hidden">
-        <div class="alert-content">
-            <span id="alert-message"></span>
-            <button id="alert-close" class="alert-close">&times;</button>
-        </div>
+      <div class="alert-content">
+        <span id="alert-message"></span>
+        <button id="alert-close" class="alert-close">&times;</button>
+      </div>
     </div>
 
     <script src="/js/main.js"></script>
-</body>
-
+  </body>
 </html>
