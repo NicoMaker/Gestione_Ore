@@ -5,7 +5,7 @@ const path = require("path");
 
 // Show client report page
 router.get("/report_cliente/:id", (req, res) => {
-  res.sendFile(path.join(__dirname, "../views", "report.html"));
+  res.sendFile(path.join(__dirname, "../../frontend/views", "report.html"));
 });
 
 // API: Get client report data

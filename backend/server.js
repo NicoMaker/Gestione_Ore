@@ -14,9 +14,9 @@ const upload = multer();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(upload.none()); // For parsing multipart/form-data without files
-app.use("/css", express.static(path.join(__dirname, "public/CSS")));
-app.use("/js", express.static(path.join(__dirname, "public/JS")));
-app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+app.use("/css", express.static(path.join(__dirname, "../frontend/public/CSS")));
+app.use("/js", express.static(path.join(__dirname, "../frontend/public/JS")));
+app.use("/json", express.static(path.join(__dirname, "../frontend/public/JSON")));
 
 // Routes
 const clientiRoutes = require("./routes/clienti");
@@ -29,11 +29,11 @@ app.use("/", reportRoutes);
 
 // Pages
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/views", "index.html"));
 });
 
 app.get("/contratti", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "contratti.html"));
+  res.sendFile(path.join(__dirname, "../frontend/views", "contratti.html"));
 });
 
 !process.env.PORT
