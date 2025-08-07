@@ -29,7 +29,7 @@ function generaInterventi(totaleOre) {
 function inserisciClientiConInterventi() {
   const data = JSON.parse(
     fs.readFileSync(
-      path.join(__dirname, "../../frontend/public/JSON/Percentuali_generazione.json"),
+      path.join(__dirname, "../JSON/Percentuali_generazione.json"),
       "utf8",
     ),
   );

@@ -450,7 +450,7 @@ function deleteIntervento(id) {
 
   showConfirmModal(
     "Conferma Eliminazione",
-    `Sei sicuro di voler eliminare l'intervento: {nomeIntervento}?`,
+    `Sei sicuro di voler eliminare l'intervento: ${nomeIntervento}?`,
     () => performDeleteIntervento(id),
   );
 }
