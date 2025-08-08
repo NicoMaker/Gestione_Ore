@@ -32,10 +32,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/HTML", "index.html"));
 });
 
-app.get("/contratti", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/HTML", "contratti.html"));
-});
-
 !process.env.PORT
   ? console.warn("⚠️  PORT non definito in .env. Uso porta di default 3000.")
   : console.log("Porta: " + process.env.PORT);
