@@ -16,7 +16,6 @@ app.use(bodyParser.json());
 app.use(upload.none()); // For parsing multipart/form-data without files
 app.use("/css", express.static(path.join(__dirname, "../frontend/CSS")));
 app.use("/js", express.static(path.join(__dirname, "../frontend/JS")));
-app.use("/json", express.static(path.join(__dirname, "../frontend/JSON")));
 
 // Routes
 const clientiRoutes = require("./routes/clienti");
