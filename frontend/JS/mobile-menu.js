@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (mainName && navName) {
     const observer = new MutationObserver(() => {
-      navName.textContent = mainName.textContent;
+      navName.textContent = `Report ${mainName.textContent}`;
     });
 
     observer.observe(mainName, { childList: true });
