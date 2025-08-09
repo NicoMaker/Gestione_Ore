@@ -374,9 +374,7 @@
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 1rem;
-  transition:
-    border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .form-group input:focus,
@@ -692,9 +690,7 @@ th {
   padding: 0.6rem 1rem;
   border: 2px solid var(--gray-300);
   background: var(--white);
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .combo-select:focus {
   border-color: var(--primary-color);
@@ -707,9 +703,7 @@ th {
   font-size: 1rem;
   padding: 0.6rem 1.1rem;
   background: var(--gray-50);
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .input-search-combo:focus {
   outline: none;
@@ -719,4 +713,27 @@ th {
 
 .search-label {
   margin-left: 10px;
+}
+
+.btn-side {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.btn-side .icon {
+  font-size: 1.2rem;
+}
+
+.btn-danger.btn-side:hover {
+  background-color: #b91c1c; /* leggermente più scuro */
+}
+
+.action-buttons.right-align {
+  justify-content: flex-end; /* allinea il contenuto a destra */
 }

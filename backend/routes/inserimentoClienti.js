@@ -1,6 +1,7 @@
 const db = require("../db");
 const fs = require("fs");
 const path = require("path");
+const readline = require("readline");
 
 const randomOreAcquistate = () => Math.floor(Math.random() * 100) + 1;
 
@@ -26,15 +27,14 @@ function generaInterventi(totaleOre) {
   return interventi;
 }
 
-function inserisciClientiConInterventi() {
+function inserisciClientiConInterventi(NUM_CLIENTI) {
   const data = JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "../JSON/Percentuali_generazione.json"),
-      "utf8",
-    ),
+      "utf8"
+    )
   );
   const gruppi = data.gruppi;
-  const NUM_CLIENTI = data.numero_clienti_totali;
 
   const CLIENTI_PER_GRUPPO_BASE = Math.floor(NUM_CLIENTI / gruppi.length);
   const RESTO = NUM_CLIENTI % gruppi.length;
@@ -67,9 +67,9 @@ function inserisciClientiConInterventi() {
 
   db.serialize(() => {
     const insertCliente = db.prepare(`
-            INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
-            VALUES (?, ?, ?, ?, ?)
-        `);
+      INSERT INTO clienti (ragione_sociale, indirizzo, email, ore_acquistate, ore_residue)
+      VALUES (?, ?, ?, ?, ?)
+    `);
 
     let completed = 0;
 
@@ -77,7 +77,7 @@ function inserisciClientiConInterventi() {
       if (completed >= clientiInseriti.length) {
         insertCliente.finalize(() => {
           console.log(
-            `\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti`,
+            `\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti`
           );
           db.close();
         });
@@ -101,14 +101,14 @@ function inserisciClientiConInterventi() {
 
           if (cliente.interventi.length > 0) {
             console.log(`      📋 Interventi creati per questo cliente:`);
-            cliente.interventi.forEach((int, idx) => {
+            cliente.interventi.forEach((int) => {
               console.log(
-                `         #${cliente.ragione_sociale}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`,
+                `         #${cliente.ragione_sociale}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`
               );
             });
           } else {
             console.log(
-              `      ⚠️ Nessun intervento generato per questo cliente.`,
+              `      ⚠️ Nessun intervento generato per questo cliente.`
             );
           }
 
@@ -121,9 +121,9 @@ function inserisciClientiConInterventi() {
           }
 
           const insertIntervento = db.prepare(`
-                        INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
-                        VALUES (?, ?, ?, ?)
-                    `);
+            INSERT INTO interventi (cliente_id, tipo_servizio, ore_utilizzate, data_intervento)
+            VALUES (?, ?, ?, ?)
+          `);
 
           let done = 0;
           cliente.interventi.forEach((int) => {
@@ -139,10 +139,10 @@ function inserisciClientiConInterventi() {
                   completed++;
                   insertNext();
                 }
-              },
+              }
             );
           });
-        },
+        }
       );
     };
 
@@ -150,9 +150,23 @@ function inserisciClientiConInterventi() {
   });
 }
 
-// Chiamata automatica all'avvio del modulo (opzionale)
+// Chiamata automatica con input da console
 if (require.main === module) {
-  inserisciClientiConInterventi();
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  rl.question("📥 Inserisci il numero di clienti da generare: ", (input) => {
+    const numeroClienti = parseInt(input, 10);
+    if (isNaN(numeroClienti) || numeroClienti <= 0) {
+      console.log("❌ Inserisci un numero valido.");
+      rl.close();
+      return;
+    }
+    rl.close();
+    inserisciClientiConInterventi(numeroClienti);
+  });
 }
 
 module.exports = {

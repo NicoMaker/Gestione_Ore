@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
@@ -131,6 +131,21 @@
                 autocomplete="off"
               />
             </div>
+            <!-- Actions -->
+            <section class="actions-section no-print">
+              <div class="actions-card">
+                <h3>Azioni</h3>
+                <div class="action-buttons right-align">
+                  <button
+                    onclick="eliminaTuttiInterventi()"
+                    class="btn btn-danger"
+                  >
+                    Elimina Tutti gli Interventi
+                  </button>
+                </div>
+              </div>
+            </section>
+
             <div class="table-container">
               <table id="tabella-interventi" class="interventions-table">
                 <thead>
@@ -143,18 +158,6 @@
                 </thead>
                 <tbody></tbody>
               </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- Actions -->
-        <section class="actions-section no-print">
-          <div class="actions-card">
-            <h3>Azioni</h3>
-            <div class="action-buttons">
-              <button onclick="eliminaTuttiInterventi()" class="btn btn-danger">
-                Elimina Tutti gli Interventi
-              </button>
             </div>
           </div>
         </section>
