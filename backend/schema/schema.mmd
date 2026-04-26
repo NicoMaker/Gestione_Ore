@@ -1,0 +1,17 @@
+erDiagram
+  clienti ||--o{ interventi : "ha"
+  clienti {
+    INTEGER id PK
+    TEXT ragione_sociale
+    TEXT indirizzo
+    TEXT email
+    REAL ore_acquistate
+    REAL ore_residue
+  }
+  interventi {
+    INTEGER id PK
+    INTEGER cliente_id FK
+    TEXT tipo_servizio
+    REAL ore_utilizzate
+    DATETIME data_intervento
+  }
