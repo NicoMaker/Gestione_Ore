@@ -1,14 +1,14 @@
 {
-  "name": "client-management-system",
+  "name": "gestione-ore",
   "version": "1.0.0",
-  "description": "Sistema di gestione ore clienti",
+  "description": "Sistema di gestione ore clienti (Node.js, Express, SQLite).",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dati_db": "node routes/inserimentoClienti.js",
     "dev": "nodemon server.js",
-    "dev_with_db": "node routes/inserimentoClienti.js && nodemon server.js",
-    "start_with_db": "node routes/inserimentoClienti.js && node server.js"
+    "seed": "node src/scripts/seed.js",
+    "dev_with_seed": "node src/scripts/seed.js && nodemon server.js",
+    "start_with_seed": "node src/scripts/seed.js && node server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -20,12 +20,7 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": [
-    "nodejs",
-    "express",
-    "sqlite",
-    "client-management"
-  ],
+  "keywords": ["nodejs", "express", "sqlite", "client-management"],
   "author": "Nico Maker <nicola.marano02@gmail.com>",
   "license": "MIT"
 }

@@ -1,4 +1,4 @@
-const db = require("../db");
+const { db } = require("../config/database.js");
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
@@ -30,7 +30,7 @@ function generaInterventi(totaleOre) {
 function inserisciClientiConInterventi(NUM_CLIENTI) {
   const data = JSON.parse(
     fs.readFileSync(
-      path.join(__dirname, "../JSON/Percentuali_generazione.json"),
+      path.join(__dirname, "../config/percentuali.json"),
       "utf8"
     )
   );
