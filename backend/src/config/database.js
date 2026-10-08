@@ -12,6 +12,7 @@ const db = new sqlite3.Database(dbPath);
 
 // ── Schema ──
 db.serialize(() => {
+  db.run("PRAGMA journal_mode = WAL");
   db.run(`
     CREATE TABLE IF NOT EXISTS clienti (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

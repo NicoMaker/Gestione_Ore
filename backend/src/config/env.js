@@ -7,5 +7,5 @@ if (!process.env.PORT) {
 }
 
 module.exports = {
-  port: process.env.PORT || 3000,
+  port: Number(process.env.PORT) || 3000,
 };

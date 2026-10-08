@@ -30,19 +30,19 @@ function updateClientInfo(data) {
     switch (true) {
       case percentuale <= 70:
         clientStatus.classList.add("active");
-        clientStatus.textContent = "Attivo)";
+        clientStatus.textContent = "Attivo";
         break;
       case percentuale <= 85:
         clientStatus.classList.add("warning");
-        clientStatus.textContent = "Attivo - Attenzione )";
+        clientStatus.textContent = "Attivo - Attenzione";
         break;
       case percentuale < 100:
         clientStatus.classList.add("danger");
-        clientStatus.textContent = "Attivo - Critico)";
+        clientStatus.textContent = "Attivo - Critico";
         break;
       default:
         clientStatus.classList.add("danger");
-        clientStatus.textContent = "Esaurito)";
+        clientStatus.textContent = "Esaurito";
         break;
     }
   }

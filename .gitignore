@@ -1,13 +1,12 @@
 # Dipendenze
-Backend/node_modules
 node_modules
 
 # Ambiente
-Backend/.env
 .env
 
 # Database SQLite generato a runtime
-Backend/db/*.db
+backend/db/*.db
+backend/db/*.db-*
 
 # Log e sistema
 *.log
