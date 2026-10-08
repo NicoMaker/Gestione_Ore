@@ -374,7 +374,9 @@
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 1rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 .form-group input:focus,
@@ -690,7 +692,9 @@ th {
   padding: 0.6rem 1rem;
   border: 2px solid var(--gray-300);
   background: var(--white);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .combo-select:focus {
   border-color: var(--primary-color);
@@ -703,7 +707,9 @@ th {
   font-size: 1rem;
   padding: 0.6rem 1.1rem;
   background: var(--gray-50);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .input-search-combo:focus {
   outline: none;

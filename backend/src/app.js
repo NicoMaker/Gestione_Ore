@@ -28,7 +28,9 @@ app.use("/css", express.static(path.join(__dirname, "../../frontend/css")));
 app.use("/js", express.static(path.join(__dirname, "../../frontend/js")));
 
 // ── Health check ──
-app.get("/health", (_req, res) => res.json({ status: "OK", uptime: Math.floor(process.uptime()) }));
+app.get("/health", (_req, res) =>
+  res.json({ status: "OK", uptime: Math.floor(process.uptime()) }),
+);
 
 // ── Route API/app ──
 app.use("/", routes);

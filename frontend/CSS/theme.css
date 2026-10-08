@@ -9,31 +9,74 @@
   --light-bg: #f4f6fb;
   --border-radius: 10px;
   --border-radius-lg: 16px;
-  --shadow-md: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px -12px rgb(15 23 42 / 0.18);
+  --shadow-md:
+    0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px -12px rgb(15 23 42 / 0.18);
   --ring: 0 0 0 3px rgb(59 130 246 / 0.35);
 }
 
-html { scroll-behavior: smooth; }
-body { font-feature-settings: "tnum" 1, "cv11" 1; }
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-feature-settings:
+    "tnum" 1,
+    "cv11" 1;
+}
 
 /* Navbar più sobria: tinta unita invece del gradiente */
-.navbar { background: var(--primary-color); backdrop-filter: saturate(1.4); }
+.navbar {
+  background: var(--primary-color);
+  backdrop-filter: saturate(1.4);
+}
 
 /* Card: bordo sottile al posto dell'ombra pesante */
-.form-card, .table-card { box-shadow: var(--shadow-md); }
-.form-title { border-bottom-width: 2px; font-size: 1.5rem; }
+.form-card,
+.table-card {
+  box-shadow: var(--shadow-md);
+}
+.form-title {
+  border-bottom-width: 2px;
+  font-size: 1.5rem;
+}
 
 /* Campi: bordo 1px, focus ben visibile */
-.form-group input, .form-group select { border-width: 1px; padding: 0.75rem 0.85rem; }
-.form-group input:focus, .form-group select:focus { box-shadow: var(--ring); }
-.form-group input:valid:not(:placeholder-shown) { border-color: var(--success-color); }
-.form-group input:valid:placeholder-shown { border-color: var(--gray-300); }
+.form-group input,
+.form-group select {
+  border-width: 1px;
+  padding: 0.75rem 0.85rem;
+}
+.form-group input:focus,
+.form-group select:focus {
+  box-shadow: var(--ring);
+}
+.form-group input:valid:not(:placeholder-shown) {
+  border-color: var(--success-color);
+}
+.form-group input:valid:placeholder-shown {
+  border-color: var(--gray-300);
+}
 
 /* Bottoni: niente sollevamento, feedback sul click */
-.btn { transition: background-color .15s ease, box-shadow .15s ease, transform .1s ease; }
-.btn:hover, .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-danger:hover { transform: none; }
-.btn:active { transform: translateY(1px); }
-.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn {
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+.btn:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-danger:hover {
+  transform: none;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 
 /* Tabelle: intestazione leggera, numeri allineati */
 .data-table th {
@@ -45,7 +88,9 @@ body { font-feature-settings: "tnum" 1, "cv11" 1; }
   border-bottom: 1px solid var(--gray-200);
   padding: 0.9rem 1rem;
 }
-.data-table td { font-variant-numeric: tabular-nums; }
+.data-table td {
+  font-variant-numeric: tabular-nums;
+}
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--primary-light);
@@ -53,7 +98,9 @@ body { font-feature-settings: "tnum" 1, "cv11" 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
@@ -80,16 +127,41 @@ body { font-feature-settings: "tnum" 1, "cv11" 1; }
     --shadow-md: 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --ring: 0 0 0 3px rgb(96 165 250 / 0.45);
   }
-  .navbar { background: #0f1830; border-bottom: 1px solid var(--gray-200); }
-  .btn-primary, .btn-success, .btn-danger { color: #fff; }
-  .btn-secondary { background: var(--gray-300); color: var(--gray-900); }
-  .btn-secondary:hover { background: var(--gray-400); }
-  .form-group input, .form-group select, .data-table input,
-  .combo-input, .combo-dropdown-search { background: var(--gray-50); color: var(--gray-900); }
-  .data-table th { background: var(--gray-50); }
+  .navbar {
+    background: #0f1830;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .btn-primary,
+  .btn-success,
+  .btn-danger {
+    color: #fff;
+  }
+  .btn-secondary {
+    background: var(--gray-300);
+    color: var(--gray-900);
+  }
+  .btn-secondary:hover {
+    background: var(--gray-400);
+  }
+  .form-group input,
+  .form-group select,
+  .data-table input,
+  .combo-input,
+  .combo-dropdown-search {
+    background: var(--gray-50);
+    color: var(--gray-900);
+  }
+  .data-table th {
+    background: var(--gray-50);
+  }
 }
 
 @media print {
-  :root { color-scheme: light; }
-  body { background: #fff; color: #000; }
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
 }

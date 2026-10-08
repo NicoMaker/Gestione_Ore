@@ -29,10 +29,7 @@ function generaInterventi(totaleOre) {
 
 function inserisciClientiConInterventi(NUM_CLIENTI) {
   const data = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, "../config/percentuali.json"),
-      "utf8"
-    )
+    fs.readFileSync(path.join(__dirname, "../config/percentuali.json"), "utf8"),
   );
   const gruppi = data.gruppi;
 
@@ -77,7 +74,7 @@ function inserisciClientiConInterventi(NUM_CLIENTI) {
       if (completed >= clientiInseriti.length) {
         insertCliente.finalize(() => {
           console.log(
-            `\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti`
+            `\n✅ Tutti i ${NUM_CLIENTI} clienti e relativi interventi inseriti`,
           );
           db.close();
         });
@@ -103,12 +100,12 @@ function inserisciClientiConInterventi(NUM_CLIENTI) {
             console.log(`      📋 Interventi creati per questo cliente:`);
             cliente.interventi.forEach((int) => {
               console.log(
-                `         #${cliente.ragione_sociale}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`
+                `         #${cliente.ragione_sociale}: ${int.tipo_servizio} - ${int.ore_utilizzate}h il ${int.data}`,
               );
             });
           } else {
             console.log(
-              `      ⚠️ Nessun intervento generato per questo cliente.`
+              `      ⚠️ Nessun intervento generato per questo cliente.`,
             );
           }
 
@@ -139,10 +136,10 @@ function inserisciClientiConInterventi(NUM_CLIENTI) {
                   completed++;
                   insertNext();
                 }
-              }
+              },
             );
           });
-        }
+        },
       );
     };
 

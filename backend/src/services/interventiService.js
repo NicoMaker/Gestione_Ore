@@ -7,7 +7,11 @@ function validaBase(tipo_servizio, ore_utilizzate) {
   if (!tipo_servizio || tipo_servizio.trim() === "") {
     throw httpError(400, "Tipo servizio è obbligatorio");
   }
-  if (!ore_utilizzate || isNaN(ore_utilizzate) || Number.parseFloat(ore_utilizzate) <= 0) {
+  if (
+    !ore_utilizzate ||
+    isNaN(ore_utilizzate) ||
+    Number.parseFloat(ore_utilizzate) <= 0
+  ) {
     throw httpError(400, "Ore utilizzate deve essere un numero maggiore di 0");
   }
 }

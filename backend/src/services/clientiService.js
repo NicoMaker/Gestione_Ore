@@ -19,7 +19,12 @@ async function addCliente(body) {
   const email = body.email || "";
   const ore_acquistate = body.ore_acquistate || 0;
 
-  if (!ragione_sociale && !indirizzo && !email && (!ore_acquistate || ore_acquistate == 0)) {
+  if (
+    !ragione_sociale &&
+    !indirizzo &&
+    !email &&
+    (!ore_acquistate || ore_acquistate == 0)
+  ) {
     throw httpError(400, "Inserisci almeno un dato per il cliente");
   }
 
