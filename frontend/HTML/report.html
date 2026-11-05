@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/report.css" />
     <link rel="stylesheet" href="/css/theme.css" />
+    <link rel="stylesheet" href="/css/bulk.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -148,10 +149,16 @@
               </div>
             </section>
 
+            <div class="bulk-toolbar no-print" id="bulk-toolbar-interventi" hidden>
+              <span class="bulk-count" id="bulk-count-interventi">0 selezionati</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="bulkClear('interventi')">Deseleziona</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="bulkDelete('interventi')">Elimina selezionati</button>
+            </div>
             <div class="table-container">
               <table id="tabella-interventi" class="interventions-table">
                 <thead>
                   <tr>
+                    <th class="bulk-col no-print"><input type="checkbox" id="bulk-all-interventi" onchange="bulkToggleAll('interventi', this)" title="Seleziona tutti" aria-label="Seleziona tutti"></th>
                     <th>Data</th>
                     <th>Tipo Servizio</th>
                     <th>Ore Utilizzate</th>
@@ -224,6 +231,7 @@
     <!-- Report · componenti -->
     <script src="/js/report/client-info.js"></script>
     <script src="/js/report/export.js"></script>
+    <script src="/js/ui/bulk.js"></script>
     <script src="/js/report/interventi.js"></script>
     <script src="/js/report/ui/modals.js"></script>
     <script src="/js/report/core/app.js"></script>

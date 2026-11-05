@@ -26,6 +26,10 @@ module.exports = {
     res.json({ success: true });
   }),
 
+  removeMultiple: asyncHandler(async (req, res) => {
+    res.json(await service.deleteMultipli(req.body.ids));
+  }),
+
   removeAll: asyncHandler(async (_req, res) => {
     await service.deleteAll();
     res.json({ success: true, message: "Tutti i dati eliminati" });

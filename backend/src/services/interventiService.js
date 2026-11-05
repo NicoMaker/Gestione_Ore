@@ -2,6 +2,7 @@
 const repo = require("../repositories/interventiRepository.js");
 const clientiRepo = require("../repositories/clientiRepository.js");
 const { httpError } = require("../utils/httpError.js");
+const { eliminaMultipli } = require("../utils/bulk.js");
 
 function validaBase(tipo_servizio, ore_utilizzate) {
   if (!tipo_servizio || tipo_servizio.trim() === "") {
@@ -83,6 +84,19 @@ async function deleteIntervento(id) {
   return { message: "Intervento eliminato con successo" };
 }
 
+// Elimina più interventi: per ciascuno le ore tornano al cliente (come
+// nell'eliminazione singola). Un id inesistente viene saltato col motivo.
+async function deleteMultipli(ids) {
+  return eliminaMultipli(
+    ids,
+    (id) => deleteIntervento(id),
+    async (id) => {
+      const row = await repo.getInterventoById(id);
+      return row ? `${row.tipo_servizio || "Intervento"} (${row.ore_utilizzate} h)` : `Intervento #${id}`;
+    },
+  );
+}
+
 async function deleteAllByCliente(clienteId) {
   const cliente = await clientiRepo.getClienteById(clienteId);
   if (!cliente) throw httpError(404, "Cliente non trovato");
@@ -97,5 +111,6 @@ module.exports = {
   addIntervento,
   updateIntervento,
   deleteIntervento,
+  deleteMultipli,
   deleteAllByCliente,
 };

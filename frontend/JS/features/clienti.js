@@ -42,11 +42,12 @@ function updateClientiTable(clienti) {
   if (clienti.length === 0) {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td colspan="8" style="text-align: center; color: var(--gray-500); padding: 2rem;">
+      <td colspan="10" style="text-align: center; color: var(--gray-500); padding: 2rem;">
         Nessun cliente registrato
       </td>
     `;
     tbody.appendChild(row);
+    bulkUpdateToolbar("clienti");
     return;
   }
 
@@ -81,6 +82,7 @@ function updateClientiTable(clienti) {
     const row = document.createElement("tr");
     row.dataset.clienteId = cliente.id;
     row.innerHTML = `
+      ${bulkCheckboxCell("clienti", cliente.id)}
       <td>
         <input type="text" value="${cliente.ragione_sociale || ""}" data-field="ragione_sociale" data-original="${cliente.ragione_sociale || ""}">
       </td>
@@ -128,6 +130,7 @@ function updateClientiTable(clienti) {
       input.addEventListener("input", () => markRowAsModified(cliente.id));
     });
   });
+  bulkUpdateToolbar("clienti"); // la selezione si azzera ad ogni ridisegno
 }
 function markRowAsModified(clienteId) {
   const row = document.querySelector(`tr[data-cliente-id="${clienteId}"]`);

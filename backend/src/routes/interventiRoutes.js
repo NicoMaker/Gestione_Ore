@@ -3,6 +3,7 @@ const router = express.Router();
 const ctrl = require("../controllers/interventiController.js");
 
 router.post("/add_intervento", ctrl.add);
+router.post("/api/interventi/elimina-multiple", ctrl.removeMultiple);
 router.put("/api/interventi/:id", ctrl.update);
 router.delete("/api/interventi/:id", ctrl.remove);
 

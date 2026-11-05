@@ -7,6 +7,7 @@ router.post("/delete_cliente/:id", ctrl.remove);
 router.post("/update_cliente/:id", ctrl.update);
 router.get("/api/clienti", ctrl.list);
 router.get("/api/clienti/:id", ctrl.getOne);
+router.post("/api/clienti/elimina-multiple", ctrl.removeMultiple);
 router.post("/delete_all", ctrl.removeAll);
 
 module.exports = router;

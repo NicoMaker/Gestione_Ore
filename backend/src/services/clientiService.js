@@ -2,6 +2,7 @@
 const repo = require("../repositories/clientiRepository.js");
 const interventiRepo = require("../repositories/interventiRepository.js");
 const { httpError } = require("../utils/httpError.js");
+const { eliminaMultipli } = require("../utils/bulk.js");
 
 async function listClienti() {
   return repo.listClienti();
@@ -71,6 +72,21 @@ async function deleteCliente(id) {
   await repo.deleteCliente(id);
 }
 
+// Elimina più clienti (con tutti i loro interventi). Un id inesistente
+// viene saltato con il motivo, gli altri vengono eliminati.
+async function deleteMultipli(ids) {
+  return eliminaMultipli(
+    ids,
+    async (id) => {
+      const cliente = await repo.getClienteById(id);
+      if (!cliente) throw httpError(404, "Cliente non trovato");
+      await deleteCliente(id);
+    },
+    async (id) =>
+      (await repo.getClienteById(id))?.ragione_sociale || `Cliente #${id}`,
+  );
+}
+
 async function deleteAll() {
   // Prima gli interventi (vincolo FK), poi i clienti.
   const { db } = require("../config/database.js");
@@ -86,5 +102,6 @@ module.exports = {
   addCliente,
   updateCliente,
   deleteCliente,
+  deleteMultipli,
   deleteAll,
 };

@@ -7,6 +7,7 @@
     <title>Gestione Ore Clienti - Assistenza</title>
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/theme.css" />
+    <link rel="stylesheet" href="/css/bulk.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -231,10 +232,16 @@
                 </button>
               </div>
             </div>
+            <div class="bulk-toolbar" id="bulk-toolbar-clienti" hidden>
+              <span class="bulk-count" id="bulk-count-clienti">0 selezionati</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="bulkClear('clienti')">Deseleziona</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="bulkDelete('clienti')">Elimina selezionati</button>
+            </div>
             <div class="table-container">
               <table id="tabella-clienti" class="data-table">
                 <thead>
                   <tr>
+                    <th class="bulk-col"><input type="checkbox" id="bulk-all-clienti" onchange="bulkToggleAll('clienti', this)" title="Seleziona tutti" aria-label="Seleziona tutti"></th>
                     <th>Ragione Sociale</th>
                     <th>Indirizzo</th>
                     <th>Email</th>
@@ -277,6 +284,7 @@
     <!-- Config (stato globale + riferimenti DOM) -->
     <script src="/js/config/dom.js"></script>
     <!-- Feature -->
+    <script src="/js/ui/bulk.js"></script>
     <script src="/js/features/clienti.js"></script>
     <script src="/js/features/interventi.js"></script>
     <script src="/js/features/filtri.js"></script>

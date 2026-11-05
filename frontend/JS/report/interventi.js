@@ -30,11 +30,12 @@ function updateInterventionsTable(interventi) {
   if (interventi.length === 0) {
     const row = document.createElement("tr");
     row.innerHTML = `
-            <td colspan="4" style="text-align: center; color: var(--gray-500); padding: 2rem;">
+            <td colspan="5" style="text-align: center; color: var(--gray-500); padding: 2rem;">
                 Nessun intervento registrato
             </td>
         `;
     tbody.appendChild(row);
+    bulkUpdateToolbar("interventi");
     return;
   }
 
@@ -51,6 +52,7 @@ function updateInterventionsTable(interventi) {
 
     const row = document.createElement("tr");
     row.innerHTML = `
+            ${bulkCheckboxCell("interventi", intervento.id, "no-print")}
             <td class="date-cell">${dataFormatted}</td>
             <td>${intervento.tipo_servizio || "-"}</td>
             <td class="hours-cell">${intervento.ore_utilizzate.toFixed(1)}</td>
@@ -77,12 +79,14 @@ function updateInterventionsTable(interventi) {
   totalRow.style.fontWeight = "bold";
   totalRow.style.backgroundColor = "var(--gray-50)";
   totalRow.innerHTML = `
+        <td class="bulk-col no-print"></td>
         <td>TOTALE</td>
         <td></td>
         <td class="hours-cell">${totalUsed.toFixed(1)}</td>
         <td class="no-print"></td>
     `;
   tbody.appendChild(totalRow);
+  bulkUpdateToolbar("interventi"); // la selezione si azzera ad ogni ridisegno
 }
 function updateComboInterventi(interventi) {
   if (!comboInterventi) return;

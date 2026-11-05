@@ -18,6 +18,10 @@ module.exports = {
     res.json({ success: true, ...result });
   }),
 
+  removeMultiple: asyncHandler(async (req, res) => {
+    res.json(await service.deleteMultipli(req.body.ids));
+  }),
+
   removeAllByCliente: asyncHandler(async (req, res) => {
     const result = await service.deleteAllByCliente(req.params.id);
     res.json({ success: true, ...result });
