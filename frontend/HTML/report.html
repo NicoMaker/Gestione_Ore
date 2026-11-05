@@ -149,16 +149,42 @@
               </div>
             </section>
 
-            <div class="bulk-toolbar no-print" id="bulk-toolbar-interventi" hidden>
-              <span class="bulk-count" id="bulk-count-interventi">0 selezionati</span>
-              <button type="button" class="btn btn-secondary btn-sm" onclick="bulkClear('interventi')">Deseleziona</button>
-              <button type="button" class="btn btn-danger btn-sm" onclick="bulkDelete('interventi')">Elimina selezionati</button>
+            <div
+              class="bulk-toolbar no-print"
+              id="bulk-toolbar-interventi"
+              hidden
+            >
+              <span class="bulk-count" id="bulk-count-interventi"
+                >0 selezionati</span
+              >
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                onclick="bulkClear('interventi')"
+              >
+                Deseleziona
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                onclick="bulkDelete('interventi')"
+              >
+                Elimina selezionati
+              </button>
             </div>
             <div class="table-container">
               <table id="tabella-interventi" class="interventions-table">
                 <thead>
                   <tr>
-                    <th class="bulk-col no-print"><input type="checkbox" id="bulk-all-interventi" onchange="bulkToggleAll('interventi', this)" title="Seleziona tutti" aria-label="Seleziona tutti"></th>
+                    <th class="bulk-col no-print">
+                      <input
+                        type="checkbox"
+                        id="bulk-all-interventi"
+                        onchange="bulkToggleAll('interventi', this)"
+                        title="Seleziona tutti"
+                        aria-label="Seleziona tutti"
+                      />
+                    </th>
                     <th>Data</th>
                     <th>Tipo Servizio</th>
                     <th>Ore Utilizzate</th>

@@ -9,7 +9,10 @@ function normalizzaIds(ids) {
   if (!Array.isArray(ids) || ids.length === 0)
     throw httpError(400, "Nessun elemento selezionato");
   if (ids.length > MAX_ELEMENTI)
-    throw httpError(400, `Troppi elementi selezionati (massimo ${MAX_ELEMENTI})`);
+    throw httpError(
+      400,
+      `Troppi elementi selezionati (massimo ${MAX_ELEMENTI})`,
+    );
   const validi = [...new Set(ids.map((x) => Number(x)))];
   if (validi.some((n) => !Number.isInteger(n) || n <= 0))
     throw httpError(400, "ID non valido nella selezione");

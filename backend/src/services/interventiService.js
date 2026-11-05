@@ -92,7 +92,9 @@ async function deleteMultipli(ids) {
     (id) => deleteIntervento(id),
     async (id) => {
       const row = await repo.getInterventoById(id);
-      return row ? `${row.tipo_servizio || "Intervento"} (${row.ore_utilizzate} h)` : `Intervento #${id}`;
+      return row
+        ? `${row.tipo_servizio || "Intervento"} (${row.ore_utilizzate} h)`
+        : `Intervento #${id}`;
     },
   );
 }

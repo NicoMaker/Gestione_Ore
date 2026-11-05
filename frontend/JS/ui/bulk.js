@@ -47,9 +47,12 @@ function bulkUpdateToolbar(entity) {
   const all = document.querySelectorAll(`.bulk-cb[data-entity="${entity}"]`);
   const n = bulkChecked(entity).length;
 
-  all.forEach((cb) => cb.closest("tr")?.classList.toggle("bulk-selected", cb.checked));
+  all.forEach((cb) =>
+    cb.closest("tr")?.classList.toggle("bulk-selected", cb.checked),
+  );
   if (toolbar) toolbar.hidden = n === 0;
-  if (countEl) countEl.textContent = n + (n === 1 ? " selezionato" : " selezionati");
+  if (countEl)
+    countEl.textContent = n + (n === 1 ? " selezionato" : " selezionati");
   if (selAll) {
     selAll.disabled = all.length === 0;
     selAll.checked = n > 0 && n === all.length;
@@ -97,7 +100,8 @@ async function bulkEseguiEliminazione(entity, ids) {
       body: JSON.stringify({ ids }),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Errore eliminazione multipla");
+    if (!response.ok)
+      throw new Error(data.error || "Errore eliminazione multipla");
 
     const ok = data.eliminati.length;
     const ko = data.saltati.length;
